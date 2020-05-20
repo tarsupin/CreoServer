@@ -1,0 +1,39 @@
+{
+    // "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es2017",
+        // "baseUrl": ".",
+        "removeComments": true,
+        // "outFile": "./assets/skysteed.js",
+        "outDir": "./dist",
+        // "module": "ESNext",
+		"module": "commonjs",
+		"esModuleInterop": true,		// has to have 'commonjs', 'amd', or 'umd'
+        "moduleResolution": "node",
+        "sourceRoot": ".",
+        "rootDir": ".",
+        "sourceMap": true,
+        
+        // Untested
+        "allowUnreachableCode": false,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+
+		// "typeRoots": [ "./typings" ],
+        "plugins": [
+        {
+          "name": "typescript-deno-plugin",
+          "enable": true, // default is `true`
+          "importmap": "import_map.json"
+        }
+      ]
+    },
+    // "include": [
+    //     "./**/*"
+    // ],
+    "exclude": [
+        "./node_modules/**/*",
+        "./notes/**/*",
+        "./dist/**/*"
+    ]
+}

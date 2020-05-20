@@ -1,0 +1,12 @@
+
+// Location of Deno
+C:\Users\nerdy\.deno
+
+// Location of Web
+C:\Users\nerdy\OneDrive\Desktop\Projects\Web
+
+// Test File
+cd C:\Users\nerdy\OneDrive\Desktop\Projects\Web\denoTesla
+C:\Users\nerdy\OneDrive\Desktop\Projects\Web\denoTesla\test\test.ts
+
+deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net test.ts
