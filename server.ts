@@ -15,10 +15,10 @@ import { config } from './config.ts';
 let port = config.ports.Lobby;
 
 // Retrieve CLI Arguments
-for( let j = 3; j < process.argv.length; j++ ) {
+for( let j = 3; j < Deno.args.length; j++ ) {
 	
-	const last = process.argv[j - 1];
-	const val = process.argv[j];
+	const last = Deno.args[j - 1];
+	const val = Deno.args[j];
 	
 	// Retrieve Port
 	if(last === "-port") {
@@ -30,9 +30,8 @@ for( let j = 3; j < process.argv.length; j++ ) {
 	}
 }
 
-const isLobby = port === config.ports.Lobby;
-
 // Server Start Message
+const isLobby = port === config.ports.Lobby;
 console.log((isLobby ? "Lobby" : "Room") + " Server Started on Port " + port + ".");
 
 // Run WebServer

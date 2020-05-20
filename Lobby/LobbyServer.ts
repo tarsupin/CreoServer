@@ -1,3 +1,4 @@
+import { WebSocket, WebSocketServer } from "https://deno.land/x/websocket/mod.ts";
 import WebServer from "../WebServer/WebServer.ts";
 import { config } from "../config.ts";
 import Lobby from "./Lobby.ts";
@@ -100,51 +101,51 @@ export default class LobbyServer extends WebServer {
 		let roomServer = this.roomServers[port];
 		if(!roomServer || !roomServer.name) { return; }
 		
-		// Create WebSocket Server
-		const WebSocket = require('ws');
-		roomServer.conn = new WebSocket('ws://' + config.server.local + ':' + port);
+		// // Create WebSocket Server
+		// const WebSocket = require('ws');
+		// roomServer.conn = new WebSocket('ws://' + config.server.local + ':' + port);
 		
-		roomServer.conn.on('error', (error: any) => {
-			if(config.local) {
-				if(error.code === "ECONNREFUSED") {
-					console.log("RoomServer " + roomServer.name + " (Port " + port + ") refused connection.");
-					roomServer.conn = null;
-				} else {
-					console.log("----------- WebSocket Error -----------");
-					console.log(error);
-				}
-			}
-		});
+		// roomServer.conn.on('error', (error: any) => {
+		// 	if(config.local) {
+		// 		if(error.code === "ECONNREFUSED") {
+		// 			console.log("RoomServer " + roomServer.name + " (Port " + port + ") refused connection.");
+		// 			roomServer.conn = null;
+		// 		} else {
+		// 			console.log("----------- WebSocket Error -----------");
+		// 			console.log(error);
+		// 		}
+		// 	}
+		// });
 		
-		roomServer.conn.on('open', () => {
-			roomServer.conn.send("LobbyServer Welcomes RoomServer " + roomServer.name + ".");
-		});
+		// roomServer.conn.on('open', () => {
+		// 	roomServer.conn.send("LobbyServer Welcomes RoomServer " + roomServer.name + ".");
+		// });
 		
-		roomServer.conn.on('message', (message: any) => {
-			console.log("RoomServer " + roomServer.name + " Says: " + message);
-		});
+		// roomServer.conn.on('message', (message: any) => {
+		// 	console.log("RoomServer " + roomServer.name + " Says: " + message);
+		// });
 	}
 	
 	private buildServer(): void {
-		
-		this.wss.on('connection', ( ws: any, req: any ) => {
-			const ip = this.getIPFromConnection( req );
-			console.log("Connection From " + ip);
-			
+        
+        this.wss.on("connection", (ws: WebSocket, req: any) => {
+            const ip = this.getIPFromConnection( req );
+            console.log("Connection From " + ip);
+            
 			// When User Receives a Message
 			// Automatically converts message to string (including from Binary Data).
-			ws.on('message', ( message: any ) => {
+            ws.on("message", function (message: string) {
 				console.log('Received: %s', message);
-				
-			});
-			
+                ws.send(message)
+            });
+            
 			// When User Disconnects
-			ws.on('close', () => {
+			ws.on("close", () => {
 				console.log("Connection From " + ip + " Closed");
 			});
-			
+            
 			// Example of Sending to User
 			// ws.send('something');
-		});
+        });
 	}
 }

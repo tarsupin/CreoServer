@@ -8,6 +8,7 @@ import {
 /** websocket echo server */
 const port = Deno.args[0] || "8080";
 console.log(`websocket server is running on :${port}`);
+
 for await (const req of serve(`:${port}`)) {
   const { conn, r: bufReader, w: bufWriter, headers } = req;
 

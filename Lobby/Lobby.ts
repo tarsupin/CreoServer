@@ -302,7 +302,6 @@ export default class Lobby {
 	// }
 	
 	
-	
 	/*
 		This method determines if it is time to create a new room.
 		
@@ -434,10 +433,11 @@ export default class Lobby {
 	}
 	
 	private resetSimulations() {
-		const sim = config.debug ? config.debug.simulate : null;
-		const doSim = sim && config.environment === 'local' && config.debug.active;
-		this.simulate.active = doSim ? true : false;
-		this.simulate.idle = doSim ? sim.idle : 0;
-		this.simulate.queued = doSim ? sim.queued : 0;
+        const sim = config.debug ? config.debug.simulate : null;
+        if(sim != null && config.environment === 'local' && config.debug.active) {
+            this.simulate.active = true;
+            this.simulate.idle = sim.idle;
+            this.simulate.queued = sim.queued;
+        }
 	}
 }

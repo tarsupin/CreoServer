@@ -6,7 +6,6 @@ C:\Users\nerdy\.deno
 C:\Users\nerdy\OneDrive\Desktop\Projects\Web
 
 // Test File
-cd C:\Users\nerdy\OneDrive\Desktop\Projects\Web\denoTesla
-C:\Users\nerdy\OneDrive\Desktop\Projects\Web\denoTesla\test\test.ts
+cd C:\Users\nerdy\OneDrive\Desktop\Projects\Web\ArenaServer
 
-deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net test.ts
+deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net server.ts

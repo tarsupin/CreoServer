@@ -1,7 +1,10 @@
+import { WebSocket, WebSocketServer } from "https://deno.land/x/websocket/mod.ts";
 import { config } from "../config.ts";
 import Timer from "./Timer.ts";
 
 /*
+    // TODO: Deno may have changed all the req.XXX values. Update the list here:
+    
 	// Request Object On Initial HTTP Connection for WebSocket
 	
 	req.connection
@@ -32,8 +35,7 @@ export default class WebServer {
 		this.timer = new Timer();
 		
 		// Create WebSocket Server
-		const WebSocket = require('ws');
-		this.wss = new WebSocket.Server({ port: port });
+		this.wss = new WebSocketServer(port);
 	}
 	
 	public getIPFromConnection( req: any ) {
