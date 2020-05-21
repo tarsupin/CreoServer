@@ -3,10 +3,10 @@ import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
 import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
 import Timer from "../Engine/Timer.ts";
-import Player from "../Player/Player.ts";
 import { GamePreference } from "../Engine/GameTypes.ts";
 import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
+import PlayerHandler from "../Player/PlayerHandler.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -43,8 +43,7 @@ export default abstract class Lobby {
 	static tickCounter: number = 0;			// Track the number of ticks with modulus of 120.
 	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
 	
-    // Players, Groups
-	static players: { [pid: number]: Player; } = {};
+    // Groups
 	static groups: { [gid: string]: GroupData } = {}	// Groups; tracks how many group players are active, idle, etc.
 	
 	// Preferences; tracks which game preferences are desired.
@@ -80,6 +79,7 @@ export default abstract class Lobby {
         
         // Prepare Arena Lobby & Rooms
         RoomHandler.buildRoomPlaceholders();
+        PlayerHandler.buildPlayerPlaceholders();
 		Lobby.buildServer();
 		
 		// Run Server Loop

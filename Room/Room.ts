@@ -15,7 +15,7 @@ export default class Room {
     
     // Core Details
     roomId: number = 0;
-    isActive: boolean = false;
+    isEnabled: boolean = false;         // TRUE if room is enabled. FALSE if disabled (can be overwritten).
     
     // Players
 	players: Array<Player>;
@@ -23,7 +23,7 @@ export default class Room {
 	constructor( roomId: number ) {
         
         // Initialize Room Details
-        this.isActive = true;
+        this.isEnabled = true;
         this.roomId = roomId;
         
         // TODO: Change number of players based on room rules.

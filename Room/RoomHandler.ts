@@ -1,9 +1,9 @@
 import LobbyFuncPlayers from "../Lobby/LobbyFuncPlayers.ts";
-import Lobby from "../Lobby/Lobby.ts";
 import { PlayerRank } from "../Engine/GameTypes.ts";
 import Activity from "../Lobby/Activity.ts";
 import RoomTracker from "./RoomTracker.ts";
 import Room from "./Room.ts";
+import PlayerTracker from "../Player/PlayerTracker.ts";
 
 
 export default abstract class RoomHandler {
@@ -28,7 +28,7 @@ export default abstract class RoomHandler {
         RoomHandler.purgeAllPlayersFromRoom(roomId);
         
         // Set as Inactive (allows it to be used for a new system)
-        RoomTracker.roomList[roomId].isActive = false;
+        RoomTracker.roomList[roomId].isEnabled = false;
     }
     
     static purgeAllPlayersFromRoom( roomId: number ) {
@@ -100,8 +100,8 @@ export default abstract class RoomHandler {
 		// Identify the PAID players first. They get priority.
 		let paidUsers = [];
 		
-		for( let pid in Lobby.players ) {
-			let player = Lobby.players[pid];
+		for( let pid in PlayerTracker.playerList ) {
+			let player = PlayerTracker.playerList[pid];
 			
 			if(player.rank >= PlayerRank.PaidUser) {
 				
@@ -114,8 +114,8 @@ export default abstract class RoomHandler {
 		// Then identify the GUEST players.
 		let guests = [];
 		
-		for( let pid in Lobby.players ) {
-			let player = Lobby.players[pid];
+		for( let pid in PlayerTracker.playerList ) {
+			let player = PlayerTracker.playerList[pid];
 			
 			if(player.rank < PlayerRank.PaidUser) {
 				guests.push(pid);
@@ -124,7 +124,7 @@ export default abstract class RoomHandler {
 		
 		// TODO: If there are more than enough guest players, select ones that have waited longest.
 		// for( let pid in guests ) {
-		// 	let guest = Lobby.players[pid];
+		// 	let guest = PlayerTracker.playerList[pid];
 		// }
 		
 		// Create New Room

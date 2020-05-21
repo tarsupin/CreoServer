@@ -42,6 +42,6 @@ export default abstract class RoomTracker {
     }
     
     static isRoomActive( roomId: number ): boolean {
-        return RoomTracker.roomList[roomId].isActive;
+        return RoomTracker.roomList[roomId].isEnabled;
     }
 }

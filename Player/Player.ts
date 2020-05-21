@@ -2,8 +2,9 @@ import { GamePreference, PlayerRank, PlayerKarma } from "../Engine/GameTypes.ts"
 
 export default class Player {
 	
-	// Identification & Assignment
-	pid: number;				// The Player ID, as assigned by the server.
+    // Identification & Assignment
+    isEnabled: boolean;         // TRUE if the player is online, active, etc. FALSE if this player can be overwritten.
+	id: number;				    // The Player ID, as assigned by the server.
     roomId: number;				// The Room that a user is assigned to.
     
 	// Important Settings
@@ -22,10 +23,11 @@ export default class Player {
 	karma: PlayerKarma;			// The level of karma the player has.
 	cheating: number;			// 0 is not cheater; 1+ is level of cheating karma.
 	
-	constructor( pid: number ) {
+	constructor( playerId: number ) {
         
-		// Initialize Default Player Values
-		this.pid = pid;
+        // Initialize Default Player Values
+        this.isEnabled = false;
+		this.id = playerId;
 		this.waitTime = Date.now();
         
         // Room Values
@@ -43,8 +45,8 @@ export default class Player {
 		this.faction = "";
 		this.group = "";
         this.rival = "";
-	}
-	
+    }
+    
 	// TODO: Set isIdle and isQueued to valid values.
 	get isIdle() { return false; }
 	get isQueued() { return false; }

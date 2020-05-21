@@ -1,19 +1,14 @@
 import Player from "../Player/Player.ts";
 import Lobby from "./Lobby.ts";
 import Activity from "./Activity.ts";
+import PlayerTracker from "../Player/PlayerTracker.ts";
 
 export default abstract class LobbyFuncPlayers {
     
-    static playerNextId: number = 0;            // Tracks the next available ID for the user.
 	static playersOnline: number = 0;			// All players connected to the server. Includes those in rooms.
 	static playersIdle: number = 0;				// Players that are not in a room. Includes playerQueued.
 	static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
 	
-    static getNextPlayerId() {
-        LobbyFuncPlayers.playerNextId++;
-        return LobbyFuncPlayers.playerNextId;
-    }
-    
 	static runPlayerLoop() {
 		
 		LobbyFuncPlayers.resetPlayerCount();
@@ -23,8 +18,8 @@ export default abstract class LobbyFuncPlayers {
 		let earliestWait = Date.now(); // Player with earliest waiting timestamp.
 		
 		// Player Loop
-		for( let i in Lobby.players ) {
-			let player = Lobby.players[i];
+		for( let i in PlayerTracker.playerList ) {
+			let player = PlayerTracker.playerList[i];
 			
 			// Update Players Counts
 			LobbyFuncPlayers.playersOnline++;
@@ -72,43 +67,41 @@ export default abstract class LobbyFuncPlayers {
 	}
 	
 	// Purge all players from this hub.
-	static purgeAllPlayers() {
+	static disconnectAllPlayers() {
 		
-		// Loop through all players in the hub.
-		for( let pid in Lobby.players ) {
-			Lobby.players[pid].disconnect();
+		// Loop through all players online and disconnect them.
+		for( let pid in PlayerTracker.playerList ) {
+			PlayerTracker.playerList[pid].disconnect();
 		}
 		
 		// Final Cleanup
-		Lobby.players = {};
 		LobbyFuncPlayers.runPlayerLoop();
 	}
 	
 	static addPlayer(): number {
         
         // Prepare the new player:
-        let pid = LobbyFuncPlayers.getNextPlayerId();
-        let player = new Player(pid);
+        let player = PlayerTracker.getAvailablePlayer();
         
 		// Make sure the player isn't already in the hub.
-		if(!player || !(player instanceof Player)) { return 0; }
+		if(player.id == 0) { return 0; }
 		
-		Lobby.players[player.pid] = player;
+		PlayerTracker.playerList[player.id] = player;
 		Activity.playerJoined();
 		
-		return player.pid;
+		return player.id;
     }
     
 	static dropPlayer( pid: number ): boolean {
 		
-		let player = Lobby.players[pid];
+		let player = PlayerTracker.playerList[pid];
 		
 		// Make sure the player is recognized in this hub.
 		if(!player || !(player instanceof Player)) { return false; }
 		
 		player.disconnect();
 		Activity.playerDisconnected();
-		delete Lobby.players[pid];
+		delete PlayerTracker.playerList[pid];
 		
 		return true;
     }
