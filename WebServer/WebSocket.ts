@@ -63,22 +63,31 @@ export class WebSocket extends EventEmitter {
         
         try {
             for await (const ev of sock) {
-                if (typeof ev === "string") {
-                    // text message
+                
+                // Binary Message
+                if (ev instanceof Uint8Array) {
+                    this.emit("bytes", ev);
+                }
+                
+                // Text Message
+                else if (typeof ev === "string") {
                     this.emit("message", ev);
-                } else if (ev instanceof Uint8Array) {
-                    // binary message
-                    this.emit("message", ev);
-                } else if (isWebSocketPingEvent(ev)) {
+                }
+                
+                // Ping
+                else if (isWebSocketPingEvent(ev)) {
                     const [, body] = ev;
-                    // ping
                     this.emit("ping", body);
-                } else if (isWebSocketPongEvent(ev)) {
+                }
+                
+                // Pong
+                else if (isWebSocketPongEvent(ev)) {
                     const [, body] = ev;
-                    // pong
                     this.emit("pong", body);
-                } else if (isWebSocketCloseEvent(ev)) {
-                    // close
+                }
+                
+                // Close
+                else if (isWebSocketCloseEvent(ev)) {
                     const { code, reason } = ev;
                     this.emit("close", code);
                 }

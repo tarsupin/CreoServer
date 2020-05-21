@@ -1,4 +1,5 @@
 import { WebSocket, WebSocketServer } from "../WebServer/WebSocket.ts";
+import LobbyServerCommands from "./LobbyServerCommands.ts";
 import WebServer from "../WebServer/WebServer.ts";
 import { config } from "../config.ts";
 import Lobby from "./Lobby.ts";
@@ -22,7 +23,8 @@ interface RoomInfo {
 // Always Exists on Port 8000
 export default class LobbyServer extends WebServer {
 	
-	lobby: Lobby;
+    lobby: Lobby;
+    commands: LobbyServerCommands;
 	
 	roomServers: {
 		[port: number]: RoomServerInfo
@@ -37,7 +39,8 @@ export default class LobbyServer extends WebServer {
 
 		// Build Server
 		this.buildServer();
-		this.lobby = new Lobby( this );
+        this.lobby = new Lobby( this );
+        this.commands = new LobbyServerCommands( this );
 		
 		// Run Server Loop
 		setInterval(() => this.serverLoop(), 4);
@@ -137,12 +140,16 @@ export default class LobbyServer extends WebServer {
             
             ws.data.playerId = pid;
             
-			// When User Receives a Message
-			// Automatically converts message to string (including from Binary Data).
-            ws.on("message", function (message: string) {
-				console.log('Received: %s', message);
-                ws.send(message)
-                console.log(ws.data.playerId);
+            // When User Sends Binary Data
+            ws.on("bytes", (bytes: Uint8Array) => {
+                this.commands.ReceiveByteCommand(ws, bytes)
+            });
+            
+			// When User Sends a Message
+            // Automatically converts message to string (including from Binary Data).
+            // ws.on("message", function (message: string) {});
+            ws.on("message", (message: string) => {
+                this.commands.ReceiveTextCommand(ws, message)
             });
             
 			// When User Disconnects

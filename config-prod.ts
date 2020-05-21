@@ -8,6 +8,14 @@ export const config = {
 	},
 	local: false,
 	environment: "prod",
+	debug: {
+		active: false,
+		simulate: {
+			ppm: 30,
+			idle: 4,
+			queued: 2,
+		}
+	},
 	cookies: {
 		password: "amFm3KdMdre_ns6teI2x4o4KjEvmsa0on",
 	},
