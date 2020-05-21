@@ -4,7 +4,6 @@ export default class Player {
 	
 	// Identification & Assignment
 	pid: number;				// The Player ID, as assigned by the server.
-    roomServerId: number;		// The Room Server that a user is assigned to.
     roomId: number;				// The Room that a user is assigned to.
     
 	// Important Settings
@@ -30,7 +29,6 @@ export default class Player {
 		this.waitTime = Date.now();
         
         // Room Values
-        this.roomServerId = 0;
         this.roomId = 0;
         this.spectate = false;
         
@@ -53,7 +51,7 @@ export default class Player {
 	
 	setGroup( group: string ) { this.group = group; }
 	setRival( rival: string ) { this.rival = rival; }
-	
+    
 	// DISCONNECT
 	disconnect() {
 		console.log("MUST DISCONNECT PLAYER");

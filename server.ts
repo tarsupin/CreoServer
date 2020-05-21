@@ -12,6 +12,7 @@
 
 import Lobby from './Lobby/Lobby.ts';
 import LobbyFunc from './Lobby/LobbyFunc.ts';
+import RoomTracker from './Room/RoomTracker.ts';
 
 // Prepare Server Setup
 Lobby.serverPort = LobbyFunc.GetServerPort();
@@ -20,6 +21,12 @@ Lobby.serverPort = LobbyFunc.GetServerPort();
 if(Lobby.serverPort >= 8000) {
     console.log("Arena Server Started on Port " + Lobby.serverPort + ".");
     Lobby.initializeLobby();
+    
+    var b = RoomTracker.getAvailableRoom();
+    console.log("findAvailableRoomId ", b);
+    
+    var a = RoomTracker.isRoomActive(5);
+    console.log("is room valid ", a);
 }
 
 else {

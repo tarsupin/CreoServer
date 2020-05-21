@@ -1,4 +1,4 @@
-import Player from "../Lobby/PlayerLobby.ts";
+import Player from "../Player/Player.ts";
 
 /*
 	Players join into Rooms to play a Game.
@@ -12,12 +12,22 @@ import Player from "../Lobby/PlayerLobby.ts";
 */
 
 export default class Room {
-	
-	// Players
-	players: { [pid: number]: Player; }
+    
+    // Core Details
+    roomId: number = 0;
+    isActive: boolean = false;
+    
+    // Players
+	players: Array<Player>;
 	
 	constructor( roomId: number ) {
-		this.players = {};
+        
+        // Initialize Room Details
+        this.isActive = true;
+        this.roomId = roomId;
+        
+        // TODO: Change number of players based on room rules.
+		this.players = new Array<Player>(8);
 	}
 	
 	// TODO: Go through purgePlayers, dropPlayers, and AddPlayers. May need to change this.

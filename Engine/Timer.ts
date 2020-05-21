@@ -24,8 +24,7 @@ export default abstract class Timer {
 	static frame: number = 0;				    // Tracks the current global frame.
 	static frameTick: boolean = false;			// TRUE if this cycle incremented the next frame.
 	static slowTick: boolean = false;			// TRUE on every 30th frame.
-    static slowerTick: boolean = false;			// TRUE on every 300th frame.
-    static slowestTick: boolean = false;        // TRUE on every 3000th frame.
+    static slowerTick: boolean = false;			// TRUE on every 1500th frame.
 	
 	static update() {
 		const curTime = Date.now();
@@ -42,19 +41,13 @@ export default abstract class Timer {
             
             // Identify Slow Ticks
             Timer.slowTick = Timer.frame % 30 === 0;
-            if(Timer.slowTick) {
-                Timer.slowerTick = Timer.frame % 300 === 0;
-                if(Timer.slowerTick) {
-                    Timer.slowestTick = Timer.frame % 3000 === 0;
-                }
-            }
+            if(Timer.slowTick) { Timer.slowerTick = Timer.frame % 1500 === 0; }
 			
 		// If we just exited the last frame:
 		} else if(Timer.frameTick) {
 			Timer.frameTick = false;
 			Timer.slowTick = false;
 			Timer.slowerTick = false;
-			Timer.slowestTick = false;
 		}
 	}
 	

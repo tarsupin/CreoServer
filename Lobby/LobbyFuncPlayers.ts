@@ -1,4 +1,4 @@
-import Player from "./PlayerLobby.ts";
+import Player from "../Player/Player.ts";
 import Lobby from "./Lobby.ts";
 import Activity from "./Activity.ts";
 

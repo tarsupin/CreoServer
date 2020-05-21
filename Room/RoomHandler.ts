@@ -1,16 +1,15 @@
-import Lobby from "./Lobby.ts";
-import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
+import LobbyFuncPlayers from "../Lobby/LobbyFuncPlayers.ts";
+import Lobby from "../Lobby/Lobby.ts";
 import { PlayerRank } from "../Engine/GameTypes.ts";
-import Activity from "./Activity.ts";
+import Activity from "../Lobby/Activity.ts";
+import RoomTracker from "./RoomTracker.ts";
+import Room from "./Room.ts";
 
-export default abstract class LobbyFuncRooms {
+
+export default abstract class RoomHandler {
     
 	static lastRoomGenTime: number = 0;				// The last timestamp of room creation.
     
-	static findAvailableRoomId( roomServerId: number ): number {
-		return 0;
-	}
-	
 	// Method contacts a server and instructs it to create a new room.
 	// When the room is created, it gives instructions to players to join.
 	static addRoom() {
@@ -21,23 +20,28 @@ export default abstract class LobbyFuncRooms {
 		
 		// Instruct players to join room, and treat them as having done so.
 		
-	}
-	
-	// static removeRoom( roomId: number ): boolean {
-		
-	// 	// Verify Room Exists.
-	// 	if(!this.rooms[roomId]) { return false; }
-		
-	// 	// Purge all Players in Room.
-	// 	this.rooms[roomId].purgePlayers();
-		
-	// 	// Delete Room
-	// 	delete this.rooms[roomId];
-		
-	// 	return true;
-	// }
-	
-	
+    }
+    
+    static disableRoom( roomId: number ) {
+        
+        // Purge players in room:
+        RoomHandler.purgeAllPlayersFromRoom(roomId);
+        
+        // Set as Inactive (allows it to be used for a new system)
+        RoomTracker.roomList[roomId].isActive = false;
+    }
+    
+    static purgeAllPlayersFromRoom( roomId: number ) {
+        var room = RoomTracker.roomList[roomId];
+        
+    }
+    
+    static removePlayerFromRoom( roomId: number, playerId: number ) {
+        var room = RoomTracker.roomList[roomId];
+        var players = room.players;
+        
+    }
+    
 	/*
 		This method determines if it is time to create a new room.
 		
@@ -49,21 +53,21 @@ export default abstract class LobbyFuncRooms {
 	*/
 	static attemptRoomGenerate() {
 		const idle = LobbyFuncPlayers.playersIdle;
-		const last = Date.now() - LobbyFuncRooms.lastRoomGenTime;
+		const last = Date.now() - RoomHandler.lastRoomGenTime;
 		
-		if(idle > 16) { return LobbyFuncRooms.generateRoom(); };
-		if(idle >= 10 && last > 9000) { return LobbyFuncRooms.generateRoom(); }
-		if(idle >= 5 && last > 14000) { return LobbyFuncRooms.generateRoom(); }
-		if(last > 19000) { return LobbyFuncRooms.generateRoom(); }
+		if(idle > 16) { return RoomHandler.generateRoom(); };
+		if(idle >= 10 && last > 9000) { return RoomHandler.generateRoom(); }
+		if(idle >= 5 && last > 14000) { return RoomHandler.generateRoom(); }
+		if(last > 19000) { return RoomHandler.generateRoom(); }
 		
 		// If there are less than 5 idle, start considering queued players to be idle.
 		if(idle > 5) { return; }
 		
 		const queued = LobbyFuncPlayers.playersQueued;
 		
-		if(queued > 16 && last > 9000) { return LobbyFuncRooms.generateRoom( true ); }
-		if(queued + idle > 10 && last > 14000) { return LobbyFuncRooms.generateRoom( true ); }
-		if(queued + idle > 5 && last > 19000) { return LobbyFuncRooms.generateRoom( true ); }
+		if(queued > 16 && last > 9000) { return RoomHandler.generateRoom( true ); }
+		if(queued + idle > 10 && last > 14000) { return RoomHandler.generateRoom( true ); }
+		if(queued + idle > 5 && last > 19000) { return RoomHandler.generateRoom( true ); }
 	}
 	
 	/*
@@ -87,11 +91,11 @@ export default abstract class LobbyFuncRooms {
 	*/
 	static generateRoom( forceQueued: boolean = false ) {
 		const playerCount = LobbyFuncPlayers.playersOnline;
-		const last = Date.now() - LobbyFuncRooms.lastRoomGenTime;
+		const last = Date.now() - RoomHandler.lastRoomGenTime;
 		
 		// Update Recent Activity
-		LobbyFuncRooms.lastRoomGenTime = Date.now();
-		const roomSize = LobbyFuncRooms.determineNextRoomSize();
+		RoomHandler.lastRoomGenTime = Date.now();
+		const roomSize = RoomHandler.determineNextRoomSize();
 		
 		// Identify the PAID players first. They get priority.
 		let paidUsers = [];
@@ -167,5 +171,11 @@ export default abstract class LobbyFuncRooms {
 		// If PPM is low (below 15), keep rooms small (2 to 4).
 		return Math.min(available, Math.floor(Math.random() * 3) + 1);
 	}
-	
+    
+    // Generate the empty rooms, so that they can be looped through.
+    static buildRoomPlaceholders() {
+        for(let roomId = 0; roomId <= RoomTracker.roomsAllowedOnServer; roomId++) {
+            RoomTracker.roomList[roomId] = new Room(roomId);
+        }
+    }
 }

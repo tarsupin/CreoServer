@@ -3,10 +3,10 @@ import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
 import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
 import Timer from "../Engine/Timer.ts";
-import Player from "./PlayerLobby.ts";
+import Player from "../Player/Player.ts";
 import { GamePreference } from "../Engine/GameTypes.ts";
-import LobbyFuncRooms from "./LobbyFuncRooms.ts";
 import Activity from "./Activity.ts";
+import RoomHandler from "../Room/RoomHandler.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -64,7 +64,7 @@ export default abstract class Lobby {
 	
 	static initializeLobby() {
         
-		LobbyFuncRooms.lastRoomGenTime = Date.now();
+		RoomHandler.lastRoomGenTime = Date.now();
 		
 		Lobby.prefs = {
 			[GamePreference.Coop]: 0,
@@ -78,7 +78,8 @@ export default abstract class Lobby {
         // Prepare Socket Server
         Lobby.wss = new WebSocketServer(Lobby.serverPort);
         
-		// Build Lobby Server
+        // Prepare Arena Lobby & Rooms
+        RoomHandler.buildRoomPlaceholders();
 		Lobby.buildServer();
 		
 		// Run Server Loop
@@ -131,25 +132,25 @@ export default abstract class Lobby {
     // Runs every 30 frames (0.5 seconds)
 	static slowTick() {
         
-        // Run Activity Tracker (every 2.5 seconds; 1st cycle)
+        // Run Activity Tracker (every 5 seconds; 1st cycle)
         if(Lobby.tickCounter == 1) {
             Activity.activityTick();
         }
         
-        // Run Player Loop (every 2.5 seconds; 2nd cycle)
+        // Run Player Loop (every 5 seconds; 3rd cycle)
         // Counts players, identifies eligible players, etc.
-        if(Lobby.tickCounter == 2) {
+        if(Lobby.tickCounter == 3) {
             LobbyFuncPlayers.runPlayerLoop();
         }
 		
-        // Attempt Room Creation
+        // Attempt Room Creation (every 5 seconds; 5th cycle)
         // Will only create a room if all tests check.
-        if(Lobby.tickCounter == 3) {
-            LobbyFuncRooms.attemptRoomGenerate();
+        if(Lobby.tickCounter == 5) {
+            RoomHandler.attemptRoomGenerate();
         }
         
         // Update Tick Counter
-        if(Lobby.tickCounter < 5) { Lobby.tickCounter++; } else { Lobby.tickCounter = 0; }
+        if(Lobby.tickCounter < 10) { Lobby.tickCounter++; } else { Lobby.tickCounter = 0; }
 	}
     
 	static resetGroups() {
