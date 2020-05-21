@@ -1,4 +1,4 @@
-import { WebSocket, WebSocketServer } from "../WebServer/WebSocket.ts";
+import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
 import { config } from "../config.ts";
 
 export default abstract class LobbyFuncCommands {

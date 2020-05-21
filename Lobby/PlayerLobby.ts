@@ -1,6 +1,6 @@
-import { GamePreference, PlayerRank, PlayerKarma } from "../WebServer/GameTypes.ts";
+import { GamePreference, PlayerRank, PlayerKarma } from "../Engine/GameTypes.ts";
 
-export default class PlayerLobby {
+export default class Player {
 	
 	// Identification & Assignment
 	pid: number;				// The Player ID, as assigned by the server.

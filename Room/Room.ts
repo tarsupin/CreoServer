@@ -1,4 +1,4 @@
-import PlayerLobby from "../Lobby/PlayerLobby.ts";
+import Player from "../Lobby/PlayerLobby.ts";
 
 /*
 	Players join into Rooms to play a Game.
@@ -14,7 +14,7 @@ import PlayerLobby from "../Lobby/PlayerLobby.ts";
 export default class Room {
 	
 	// Players
-	players: { [pid: number]: PlayerLobby; }
+	players: { [pid: number]: Player; }
 	
 	constructor( roomId: number ) {
 		this.players = {};

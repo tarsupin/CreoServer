@@ -1,4 +1,4 @@
-import PlayerLobby from "./PlayerLobby.ts";
+import Player from "./PlayerLobby.ts";
 import Lobby from "./Lobby.ts";
 import Activity from "./Activity.ts";
 
@@ -20,7 +20,7 @@ export default abstract class LobbyFuncPlayers {
 		Lobby.resetGroups();
 		Lobby.resetPrefs();
 		
-		let earliestWait = Date.now();
+		let earliestWait = Date.now(); // Player with earliest waiting timestamp.
 		
 		// Player Loop
 		for( let i in Lobby.players ) {
@@ -88,10 +88,10 @@ export default abstract class LobbyFuncPlayers {
         
         // Prepare the new player:
         let pid = LobbyFuncPlayers.getNextPlayerId();
-        let player = new PlayerLobby(pid);
+        let player = new Player(pid);
         
 		// Make sure the player isn't already in the hub.
-		if(!player || !(player instanceof PlayerLobby)) { return 0; }
+		if(!player || !(player instanceof Player)) { return 0; }
 		
 		Lobby.players[player.pid] = player;
 		Activity.playerJoined();
@@ -104,7 +104,7 @@ export default abstract class LobbyFuncPlayers {
 		let player = Lobby.players[pid];
 		
 		// Make sure the player is recognized in this hub.
-		if(!player || !(player instanceof PlayerLobby)) { return false; }
+		if(!player || !(player instanceof Player)) { return false; }
 		
 		player.disconnect();
 		Activity.playerDisconnected();

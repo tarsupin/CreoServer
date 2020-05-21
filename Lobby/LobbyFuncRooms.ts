@@ -1,8 +1,7 @@
 import Lobby from "./Lobby.ts";
 import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
-import { PlayerRank } from "../WebServer/GameTypes.ts";
+import { PlayerRank } from "../Engine/GameTypes.ts";
 import Activity from "./Activity.ts";
-import LobbyFuncRoomServers from "./LobbyFuncRoomServers.ts";
 
 export default abstract class LobbyFuncRooms {
     

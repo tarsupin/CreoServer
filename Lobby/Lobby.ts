@@ -1,11 +1,10 @@
-import { WebSocket, WebSocketServer } from "../WebServer/WebSocket.ts";
+import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
 import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
 import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
-import Timer from "../WebServer/Timer.ts";
-import LobbyFuncRoomServers from "./LobbyFuncRoomServers.ts";
-import PlayerLobby from "./PlayerLobby.ts";
-import { GamePreference } from "../WebServer/GameTypes.ts";
+import Timer from "../Engine/Timer.ts";
+import Player from "./PlayerLobby.ts";
+import { GamePreference } from "../Engine/GameTypes.ts";
 import LobbyFuncRooms from "./LobbyFuncRooms.ts";
 import Activity from "./Activity.ts";
 
@@ -32,42 +31,20 @@ import Activity from "./Activity.ts";
 		- This addresses the "poor sport" issue where people refuse to play.
 */
 
-interface GroupData {
-	online: number,
-	idle: number,
-}
-
-interface RoomServerInfo {
-    id: number,
-    name: string,					// Name of the Room Server
-    port: number,                   // Port to the Room Server
-	isOnline: boolean,				// TRUE if the server is online; FALSE if not.
-    conn?: WebSocket,				// The Socket Connection (ws)
-    process?: Deno.Process,         // The child process of the room server.
-	roomsOpen: number,				// # of Rooms on Room Server
-	playerCount: number,			// # of players in the Room Server (may be estimated)
-	
-	// List of Rooms
-	rooms: { [id: number]: RoomInfo },
-}
-
-interface RoomInfo {
-	playerCount: number,		// # of Players Assigned to Room
-	players: any,				// List of Players in Room
-}
+interface GroupData { online: number, idle: number }
 
 // Always Exists on Port 8000
-export default class Lobby {
+export default abstract class Lobby {
     
     // Connection Details
+    static serverPort: number = 0;          // The port for this server.
     static wss: any;
-	static roomServers: { [id: number]: RoomServerInfo } = {};      // Tracks Room Servers: Process, Connection, etc.
 	
 	static tickCounter: number = 0;			// Track the number of ticks with modulus of 120.
 	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
 	
     // Players, Groups
-	static players: { [pid: number]: PlayerLobby; } = {};
+	static players: { [pid: number]: Player; } = {};
 	static groups: { [gid: string]: GroupData } = {}	// Groups; tracks how many group players are active, idle, etc.
 	
 	// Preferences; tracks which game preferences are desired.
@@ -85,7 +62,7 @@ export default class Lobby {
 		queued: number,
 	}
 	
-	constructor() {
+	static initializeLobby() {
         
 		LobbyFuncRooms.lastRoomGenTime = Date.now();
 		
@@ -99,11 +76,7 @@ export default class Lobby {
         Lobby.resetSimulations();
         
         // Prepare Socket Server
-        Lobby.wss = new WebSocketServer(config.lobby.port);
-        
-        // Prepare Room Servers
-		Lobby.roomServers = {};
-		LobbyFuncRoomServers.setupAllRoomServers();
+        Lobby.wss = new WebSocketServer(Lobby.serverPort);
         
 		// Build Lobby Server
 		Lobby.buildServer();
@@ -116,8 +89,6 @@ export default class Lobby {
 		Timer.update();
 		
 		if(Timer.slowTick) {
-			
-			// Run Lobby
 			Lobby.slowTick();
 		}
 		
@@ -157,24 +128,30 @@ export default class Lobby {
         });
     }
     
+    // Runs every 30 frames (0.5 seconds)
 	static slowTick() {
-		Lobby.tickCounter++;
+        
+        // Run Activity Tracker (every 2.5 seconds; 1st cycle)
+        if(Lobby.tickCounter == 1) {
+            Activity.activityTick();
+        }
+        
+        // Run Player Loop (every 2.5 seconds; 2nd cycle)
+        // Counts players, identifies eligible players, etc.
+        if(Lobby.tickCounter == 2) {
+            LobbyFuncPlayers.runPlayerLoop();
+        }
 		
-		// Run Every 2.5 Seconds.
-		if(Lobby.tickCounter % 5 === 0) {
-			Lobby.tickCounter = 0;
-			
-			// Run Activity Tracker
-			Activity.activityTick();
-			
-			// Run Player Loop (counts players, identifies eligible players, etc).
-			LobbyFuncPlayers.runPlayerLoop();
-		}
-		
-		// Attempt to create a room (will only create one if all tests check).
-		LobbyFuncRooms.attemptRoomGenerate();
+        // Attempt Room Creation
+        // Will only create a room if all tests check.
+        if(Lobby.tickCounter == 3) {
+            LobbyFuncRooms.attemptRoomGenerate();
+        }
+        
+        // Update Tick Counter
+        if(Lobby.tickCounter < 5) { Lobby.tickCounter++; } else { Lobby.tickCounter = 0; }
 	}
-	
+    
 	static resetGroups() {
 		for( let i in Lobby.groups ) {
 			let group = Lobby.groups[i];

@@ -9,11 +9,10 @@ C:\Users\nerdy\OneDrive\Desktop\Projects\Web
 
 // Script to Run Deno
 cd C:\Users\nerdy\OneDrive\Desktop\Projects\Web\ArenaServer
-deno run --allow-env --allow-run --allow-write --allow-read --allow-plugin --allow-net server.ts
 
-
-// Run Room Servers
-deno run --allow-env --allow-run --allow-write --allow-read --allow-plugin --allow-net server.ts -port 8001
+// Run Lobby Servers
+deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net server.ts -port 8000
+deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net server.ts -port 8001
 
 
 // Find Port

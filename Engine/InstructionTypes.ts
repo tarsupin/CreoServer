@@ -6,11 +6,6 @@ export const enum LobbyInstructions {
 	roomInfo = 1,			// IP, Port
 }
 
-// Lobby To Room
-export const enum LobbyToRoomInstructions {
-	createRoom = 10,		// Room ID, Game Type, Player Count, [Player IDs, ...], Team #1 Count [Player IDs, ...]
-}
-
 // Player To Lobby
 export const enum ToLobbyInstructions {
 	disconnect = 0,			// Player wants to disconnect.

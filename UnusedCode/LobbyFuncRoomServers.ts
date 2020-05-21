@@ -1,8 +1,36 @@
 import { config } from "../config.ts";
-import Lobby from "./Lobby.ts";
-import { WebSocket } from "../WebServer/WebSocket.ts";
+import { WebSocket } from "../Engine/WebSocket.ts";
+
+/*
+    This code was originally for having room servers running on their own processes.
+    I've since decided not to do that, as there are a lot of complications with running individual processes and web sockets.
+    If that ever changes, this code is mostly ready.
+*/
+
+interface RoomServerInfo {
+    id: number,
+    name: string,					// Name of the Room Server
+    port: number,                   // Port to the Room Server
+	isOnline: boolean,				// TRUE if the server is online; FALSE if not.
+    conn?: WebSocket,				// The Socket Connection (ws)
+    process?: Deno.Process,         // The child process of the room server.
+	roomsOpen: number,				// # of Rooms on Room Server
+	playerCount: number,			// # of players in the Room Server (may be estimated)
+	
+	// List of Rooms
+	rooms: { [id: number]: RoomServerRoomInfo },
+}
+
+interface RoomServerRoomInfo {
+	playerCount: number,		// # of Players Assigned to Room
+	players: any,				// List of Players in Room
+}
 
 export default abstract class LobbyFuncRoomServers {
+    
+     // Tracks Room Servers: Process, Connection, etc.
+     // Was originally Lobby.roomServers
+    static roomServers: { [id: number]: RoomServerInfo } = {};
     
     // isRoomServerActive()
     // addRoomServer()
@@ -17,14 +45,21 @@ export default abstract class LobbyFuncRoomServers {
     
     // Loops through available Room Servers and attempts to initialize them and connect to them.
 	static async setupAllRoomServers() {
-		const rsConfigList = config.roomServers;
+        // const rsConfigList = config.roomServers;
+        const rsConfigList = [
+          {
+              name: "Malakai",
+              endpoint: null,
+              port: 8001,
+          }  
+        ];
         
         // Loop through all room servers listed in the config.
         for(let roomServerId = 0; roomServerId < rsConfigList.length; roomServerId++) {
             let rsConfig = rsConfigList[roomServerId];
             
             // Prepare Lobby Tracker
-            Lobby.roomServers[roomServerId] = {
+            this.roomServers[roomServerId] = {
                 id: roomServerId,
                 name: rsConfig.name,
                 port: rsConfig.port,
@@ -50,7 +85,7 @@ export default abstract class LobbyFuncRoomServers {
     // Trying to start sub-process with Deno, but so far it doesn't seem capable.
     // For now, will need to start on my own.
     static async initiateLocalRoomServer(roomServerId: number) {
-        let roomServer = Lobby.roomServers[roomServerId];
+        let roomServer = this.roomServers[roomServerId];
 		if(!roomServer || !roomServer.name || !roomServer.port) { return; }
         
         const process = Deno.run({
@@ -84,7 +119,7 @@ export default abstract class LobbyFuncRoomServers {
     }
     
     static async connectToRoomServer( roomServerId: number ) {
-        let roomServer = Lobby.roomServers[roomServerId];
+        let roomServer = this.roomServers[roomServerId];
         
         roomServer.conn = await new WebSocket(roomServer.name, 'ws://' + config.server.local + ':' + roomServer.port);
         
@@ -98,7 +133,7 @@ export default abstract class LobbyFuncRoomServers {
 	
 	// Builds Commands for Room Server Connection
 	static async buildRoomServerCommands( roomServerId: number ) {
-		let roomServer = Lobby.roomServers[roomServerId];
+		let roomServer = this.roomServers[roomServerId];
 		if(!roomServer || !roomServer.name || !roomServer.conn) { return; }
         
         roomServer.conn.on("connection", (ws: WebSocket) => {
