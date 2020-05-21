@@ -6,20 +6,17 @@ import LobbyFuncRoomServers from "./LobbyFuncRoomServers.ts";
 
 export default abstract class LobbyFuncRooms {
     
-	static lastRoom: number = 0;				// The last timestamp of room creation.
+	static lastRoomGenTime: number = 0;				// The last timestamp of room creation.
     
-	// TODO: Update addRoom(), removeRoom(), newRoomId(); need update since HUB removed.
-	// TODO: Update addRoom(), removeRoom(), newRoomId(); need update since HUB removed.
-	// TODO: Update addRoom(), removeRoom(), newRoomId(); need update since HUB removed.
-	// TODO: Update addRoom(), removeRoom(), newRoomId(); need update since HUB removed.
-	// TODO: Update addRoom(), removeRoom(), newRoomId(); need update since HUB removed.
+	static findAvailableRoomId( roomServerId: number ): number {
+		return 0;
+	}
 	
 	// Method contacts a server and instructs it to create a new room.
 	// When the room is created, it gives instructions to players to join.
 	static addRoom() {
 		
 		// Identify a Room Server to play on:
-		const port = LobbyFuncRoomServers.getAvailableRoomServer();
 		
 		// Communicate with the Room Server (to create the room)
 		
@@ -41,19 +38,6 @@ export default abstract class LobbyFuncRooms {
 	// 	return true;
 	// }
 	
-	// static newRoomId(): number {
-	// 	const lastID = Object.keys(this.rooms).length + 1;
-		
-	// 	// Loop through every room ID until one is available.
-	// 	for( let i = 1; i <= lastID; i++ ) {
-	// 		if(!this.rooms[i]) {
-	// 			return i;
-	// 		}
-	// 	}
-		
-	// 	return null;
-	// }
-	
 	
 	/*
 		This method determines if it is time to create a new room.
@@ -66,7 +50,7 @@ export default abstract class LobbyFuncRooms {
 	*/
 	static attemptRoomGenerate() {
 		const idle = LobbyFuncPlayers.playersIdle;
-		const last = Date.now() - LobbyFuncRooms.lastRoom;
+		const last = Date.now() - LobbyFuncRooms.lastRoomGenTime;
 		
 		if(idle > 16) { return LobbyFuncRooms.generateRoom(); };
 		if(idle >= 10 && last > 9000) { return LobbyFuncRooms.generateRoom(); }
@@ -104,10 +88,10 @@ export default abstract class LobbyFuncRooms {
 	*/
 	static generateRoom( forceQueued: boolean = false ) {
 		const playerCount = LobbyFuncPlayers.playersOnline;
-		const last = Date.now() - LobbyFuncRooms.lastRoom;
+		const last = Date.now() - LobbyFuncRooms.lastRoomGenTime;
 		
 		// Update Recent Activity
-		LobbyFuncRooms.lastRoom = Date.now();
+		LobbyFuncRooms.lastRoomGenTime = Date.now();
 		const roomSize = LobbyFuncRooms.determineNextRoomSize();
 		
 		// Identify the PAID players first. They get priority.

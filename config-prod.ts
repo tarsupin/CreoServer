@@ -29,19 +29,68 @@ export const config = {
 		key: '/etc/letsencrypt/live/nexus.games/privkey.pem',
 		cert: '/etc/letsencrypt/live/nexus.games/cert.pem',
 	},
-	ports: {
-		Lobby: 8000,
-		RoomServerStart: 8001,
-		RoomServerEnd: 8010,
-		RoomServers: {
-			8001: "Malakai",
-			8002: "Saiki",
-			8003: "Kirito",
-			8004: "Gannicus",
-			8005: "Belthazor",
-			// Jordan, Prairie, Doctress, Ye
-		}
-	},
+    roomServers: [
+        {
+            name: "Malakai",
+            endpoint: null,
+            port: 8001,
+        },
+        {
+            name: "Saiki",
+            endpoint: null,
+            port: 8002,
+        },
+        {
+            name: "Kirito",
+            endpoint: null,
+            port: 8003,
+        },
+        {
+            name: "Gannicus",
+            endpoint: null,
+            port: 8004,
+        },
+        {
+            name: "Belthazor",
+            endpoint: null,
+            port: 8005,
+        },
+        {
+            name: "Neo",
+            endpoint: null,
+            port: 8006,
+        },
+        {
+            name: "Arya",
+            endpoint: null,
+            port: 8007,
+        },
+        {
+            name: "Prairie",
+            endpoint: null,
+            port: 8008,
+        },
+        {
+            name: "Collier",
+            endpoint: null,
+            port: 8009,
+        },
+        {
+            name: "Shayla",
+            endpoint: null,
+            port: 8010,
+        },
+        {
+            name: "Avalon",
+            endpoint: null,
+            port: 8011,
+        },
+        {
+            name: "Doctress",
+            endpoint: null,
+            port: 8012,
+        },
+    ],
 	redis: {
 		port: 6379,
 		host: 'localhost',

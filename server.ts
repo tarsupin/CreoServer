@@ -7,12 +7,12 @@
 	node --max-old-space-size=8192 server.js
 */
 
-import LobbyServer from './Lobby/LobbyServer.ts';
+import Lobby from './Lobby/Lobby.ts';
 import RoomServer from './Room/RoomServer.ts';
 import { config } from './config.ts';
 
 // Prepare Server Setup
-let port = config.ports.Lobby;
+let port = config.lobby.port;
 
 // Retrieve CLI Arguments
 for( let j = 0; j < Deno.args.length; j++ ) {
@@ -30,12 +30,9 @@ for( let j = 0; j < Deno.args.length; j++ ) {
 	}
 }
 
-console.log("Deno Args")
-console.log(Deno.args);
-
 // Server Start Message
-const isLobby = port === config.ports.Lobby;
+const isLobby = port === config.lobby.port;
 console.log((isLobby ? "Lobby" : "Room") + " Server Started on Port " + port + ".");
 
 // Run WebServer
-let webServer = isLobby ? new LobbyServer() : new RoomServer( port );
+let webServer = isLobby ? new Lobby() : new RoomServer( port );

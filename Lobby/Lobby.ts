@@ -1,10 +1,13 @@
-import PlayerLobby from "./PlayerLobby.ts";
-import Activity from "./Activity.ts";
-import { GamePreference, PlayerRank } from "../WebServer/GameTypes.ts";
+import { WebSocket, WebSocketServer } from "../WebServer/WebSocket.ts";
+import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
-import LobbyServer from "./LobbyServer.ts";
 import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
+import Timer from "../WebServer/Timer.ts";
+import LobbyFuncRoomServers from "./LobbyFuncRoomServers.ts";
+import PlayerLobby from "./PlayerLobby.ts";
+import { GamePreference } from "../WebServer/GameTypes.ts";
 import LobbyFuncRooms from "./LobbyFuncRooms.ts";
+import Activity from "./Activity.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -34,17 +37,38 @@ interface GroupData {
 	idle: number,
 }
 
-export default abstract class Lobby {
+interface RoomServerInfo {
+    id: number,
+    name: string,					// Name of the Room Server
+    port: number,                   // Port to the Room Server
+	isOnline: boolean,				// TRUE if the server is online; FALSE if not.
+    conn?: WebSocket,				// The Socket Connection (ws)
+    process?: Deno.Process,         // The child process of the room server.
+	roomsOpen: number,				// # of Rooms on Room Server
+	playerCount: number,			// # of players in the Room Server (may be estimated)
 	
-	static server: LobbyServer;				// Reference to the LobbyServer class.
-	static tickCounter: number;				// Track the number of ticks with modulus of 120.
-	static longestWait: number;				// The duration in miliseconds of the longest idle time in the lobby.
+	// List of Rooms
+	rooms: { [id: number]: RoomInfo },
+}
+
+interface RoomInfo {
+	playerCount: number,		// # of Players Assigned to Room
+	players: any,				// List of Players in Room
+}
+
+// Always Exists on Port 8000
+export default class Lobby {
+    
+    // Connection Details
+    static wss: any;
+	static roomServers: { [id: number]: RoomServerInfo } = {};      // Tracks Room Servers: Process, Connection, etc.
 	
-    // Players
-	static players: { [pid: number]: PlayerLobby; }
+	static tickCounter: number = 0;			// Track the number of ticks with modulus of 120.
+	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
 	
-	// Groups; tracks how many group players are active, idle, etc.
-	static groups: { [gid: string]: GroupData }	// A Dictionary of Groups, and their # of users online.
+    // Players, Groups
+	static players: { [pid: number]: PlayerLobby; } = {};
+	static groups: { [gid: string]: GroupData } = {}	// Groups; tracks how many group players are active, idle, etc.
 	
 	// Preferences; tracks which game preferences are desired.
 	static prefs: {
@@ -61,19 +85,9 @@ export default abstract class Lobby {
 		queued: number,
 	}
 	
-	static prepareLobby( server: LobbyServer ) {
-		
-		// Systems
-		Lobby.server = server;
-		
-		// Initialize Values
-        Lobby.longestWait = 0;
+	constructor() {
         
-		// Objects
-		LobbyFuncRooms.lastRoom = Date.now();
-		Lobby.tickCounter = 0;
-		Lobby.players = {};
-		Lobby.groups = {};
+		LobbyFuncRooms.lastRoomGenTime = Date.now();
 		
 		Lobby.prefs = {
 			[GamePreference.Coop]: 0,
@@ -82,13 +96,65 @@ export default abstract class Lobby {
 			[GamePreference.Team]: 0,
 		}
 		
-		Lobby.simulate = {
-			active: false,
-			idle: 0,
-			queued: 0,
-        }
+        Lobby.resetSimulations();
         
-		Lobby.resetSimulations();
+        // Prepare Socket Server
+        Lobby.wss = new WebSocketServer(config.lobby.port);
+        
+        // Prepare Room Servers
+		Lobby.roomServers = {};
+		LobbyFuncRoomServers.setupAllRoomServers();
+        
+		// Build Lobby Server
+		Lobby.buildServer();
+		
+		// Run Server Loop
+        setInterval(() => Lobby.serverLoop(), 4);
+	}
+	
+	static serverLoop() {
+		Timer.update();
+		
+		if(Timer.slowTick) {
+			
+			// Run Lobby
+			Lobby.slowTick();
+		}
+		
+		// Benchmarking
+		// const rnd = Math.random();
+		// if(rnd > 0.999999) {
+		// 	console.log("ms: " + Timer.delta + ", frame: " + Timer.frame + ", rnd: " + rnd + ", count: " + count);
+		// }
+	}
+	
+	static buildServer(): void {
+        
+        Lobby.wss.on("connection", (ws: WebSocket) => {
+            
+            // Create New Player
+            let pid = LobbyFuncPlayers.addPlayer();
+            // TODO: Need to add session data to link the client and server, so it can remember the session.
+            
+            ws.data.playerId = pid;
+            
+            // When User Sends Binary Data
+            ws.on("bytes", (bytes: Uint8Array) => {
+                LobbyFuncCommands.ReceiveByteCommand(ws, bytes)
+            });
+            
+			// When User Sends a Message
+            // Automatically converts message to string (including from Binary Data).
+            // ws.on("message", function (message: string) {});
+            ws.on("message", (message: string) => {
+                LobbyFuncCommands.ReceiveTextCommand(ws, message)
+            });
+            
+			// When User Disconnects
+			ws.on("close", () => {
+				// console.log("Connection Closed");
+			});
+        });
     }
     
 	static slowTick() {
@@ -127,6 +193,13 @@ export default abstract class Lobby {
 	}
 	
 	static resetSimulations() {
+        
+		Lobby.simulate = {
+			active: false,
+			idle: 0,
+			queued: 0,
+        }
+        
         const sim = config.debug ? config.debug.simulate : null;
         if(sim != null && config.environment === 'local' && config.debug.active) {
             Lobby.simulate.active = true;
