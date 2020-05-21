@@ -42,9 +42,10 @@ export default class Lobby {
 	private lastRoom: number;					// The last timestamp of room creation.
 	private longestWait: number;				// The duration in miliseconds of the longest idle time in the lobby.
 	
-	// Players
+    // Players
 	private players: { [pid: number]: PlayerLobby; }
 	
+    private playerNextId: number;               // Tracks the next available ID for the user.
 	private playersOnline: number;				// All players connected to the server. Includes those in rooms.
 	private playersIdle: number;				// Players that are not in a room. Includes playerQueued.
 	private playersQueued: number;				// Queued Players are waiting for Group or Rival assignments, if any are present.
@@ -74,7 +75,8 @@ export default class Lobby {
 		this.activity = new Activity();
 		
 		// Initialize Values
-		this.longestWait = 0;
+        this.longestWait = 0;
+        this.playerNextId = 0;
 		this.playersOnline = 0;
 		this.playersIdle = 0;
 		this.playersQueued = 0;
@@ -98,7 +100,12 @@ export default class Lobby {
 			queued: 0,
 		}
 		this.resetSimulations();
-	}
+    }
+    
+    get newPlayerId() {
+        this.playerNextId++;
+        return this.playerNextId;
+    }
 	
 	slowTick() {
 		this.tickCounter++;
@@ -230,17 +237,20 @@ export default class Lobby {
 		delete this.players[pid];
 		
 		return true;
-	}
-	
-	addPlayer( player: PlayerLobby ): boolean {
-		
+    }
+    
+	addPlayer(): number {
+        
+        // Prepare the new player:
+        let player = new PlayerLobby(this.newPlayerId);
+        
 		// Make sure the player isn't already in the hub.
-		if(!player || !(player instanceof PlayerLobby) || !this.players[player.pid]) { return false; }
+		if(!player || !(player instanceof PlayerLobby)) { return 0; }
 		
 		this.players[player.pid] = player;
 		this.activity.playerJoined();
 		
-		return true;
+		return player.pid;
 	}
 	
 	// TODO: Update addRoom(), removeRoom(), newRoomId(); need update since HUB removed.

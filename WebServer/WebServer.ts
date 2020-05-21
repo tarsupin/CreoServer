@@ -1,4 +1,4 @@
-import { WebSocket, WebSocketServer } from "https://deno.land/x/websocket/mod.ts";
+import { WebSocket, WebSocketServer } from "./WebSocket.ts";
 import { config } from "../config.ts";
 import Timer from "./Timer.ts";
 
@@ -35,7 +35,7 @@ export default class WebServer {
 		this.timer = new Timer();
 		
 		// Create WebSocket Server
-		this.wss = new WebSocketServer(port);
+        this.wss = new WebSocketServer(port);
 	}
 	
 	public getIPFromConnection( req: any ) {
