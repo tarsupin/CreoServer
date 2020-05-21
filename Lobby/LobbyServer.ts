@@ -3,6 +3,8 @@ import LobbyServerCommands from "./LobbyServerCommands.ts";
 import WebServer from "../WebServer/WebServer.ts";
 import { config } from "../config.ts";
 import Lobby from "./Lobby.ts";
+import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
+import Timer from "../WebServer/Timer.ts";
 
 interface RoomServerInfo {
 	name: string,					// Name of the Room Server
@@ -47,18 +49,18 @@ export default class LobbyServer extends WebServer {
 	}
 	
 	private serverLoop() {
-		this.timer.update();
+		Timer.update();
 		
-		if(this.timer.slowTick) {
+		if(Timer.slowTick) {
 			
 			// Run Lobby
-			this.lobby.slowTick();
+			Lobby.slowTick();
 		}
 		
 		// Benchmarking
 		// const rnd = Math.random();
 		// if(rnd > 0.999999) {
-		// 	console.log("ms: " + this.timer.delta + ", frame: " + this.timer.frame + ", rnd: " + rnd + ", count: " + count);
+		// 	console.log("ms: " + Timer.delta + ", frame: " + Timer.frame + ", rnd: " + rnd + ", count: " + count);
 		// }
 	}
 	
@@ -135,7 +137,7 @@ export default class LobbyServer extends WebServer {
         this.wss.on("connection", (ws: WebSocket) => {
             
             // Create New Player
-            var pid = this.lobby.addPlayer();
+            var pid = LobbyFuncPlayers.addPlayer();
             // TODO: Need to add session data to link the client and server, so it can remember the session.
             
             ws.data.playerId = pid;

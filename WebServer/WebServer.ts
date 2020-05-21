@@ -26,13 +26,9 @@ import Timer from "./Timer.ts";
 */
 
 export default class WebServer {
-	readonly timer: Timer;
 	readonly wss: any;
 	
 	constructor( port: number ) {
-		
-		// Prepare Systems
-		this.timer = new Timer();
 		
 		// Create WebSocket Server
         this.wss = new WebSocketServer(port);

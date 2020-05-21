@@ -1,4 +1,5 @@
 import WebServer from "../WebServer/WebServer.ts";
+import Timer from "../WebServer/Timer.ts";
 
 export default class RoomServer extends WebServer {
 	
@@ -9,12 +10,12 @@ export default class RoomServer extends WebServer {
 	}
 	
 	private serverLoop() {
-		this.timer.update();
+		Timer.update();
 		
 		// Benchmarking
 		// const rnd = Math.random();
 		// if(rnd > 0.999999) {
-		// 	console.log("ms: " + this.timer.delta + ", frame: " + this.timer.frame + ", rnd: " + rnd + ", count: " + count);
+		// 	console.log("ms: " + Timer.delta + ", frame: " + Timer.frame + ", rnd: " + rnd + ", count: " + count);
 		// }
 	}
 	

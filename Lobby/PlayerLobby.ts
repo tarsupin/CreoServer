@@ -4,7 +4,9 @@ export default class PlayerLobby {
 	
 	// Identification & Assignment
 	pid: number;				// The Player ID, as assigned by the server.
-	
+    roomServerId: number;		// The Room Server that a user is assigned to.
+    roomId: number;				// The Room that a user is assigned to.
+    
 	// Important Settings
 	gamePref: GamePreference;	// Which type of games / rooms you want to play.
 	faction: string;			// The faction of choice. Few options available; displays in game?
@@ -22,19 +24,27 @@ export default class PlayerLobby {
 	cheating: number;			// 0 is not cheater; 1+ is level of cheating karma.
 	
 	constructor( pid: number ) {
+        
+		// Initialize Default Player Values
 		this.pid = pid;
 		this.waitTime = Date.now();
-
-		// Initialize Player Values
-		this.spectate = false;
+        
+        // Room Values
+        this.roomServerId = 0;
+        this.roomId = 0;
+        this.spectate = false;
+        
+        // Player Details
 		this.rank = PlayerRank.Guest;
 		this.pingAvg = 5;
 		this.karma = PlayerKarma.None;
-		this.cheating = 0;
+        this.cheating = 0;
+        
+        // Player Settings
 		this.gamePref = GamePreference.Battle;
 		this.faction = "";
 		this.group = "";
-		this.rival = "";
+        this.rival = "";
 	}
 	
 	// TODO: Set isIdle and isQueued to valid values.
