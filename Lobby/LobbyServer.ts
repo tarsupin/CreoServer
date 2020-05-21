@@ -9,7 +9,8 @@ import LobbyFuncRoomServers from "./LobbyFuncRoomServers.ts";
 interface RoomServerInfo {
 	name: string,					// Name of the Room Server
 	isOnline: boolean,				// TRUE if the server is online; FALSE if not.
-	conn: any,						// The Socket Connection (ws)
+    conn: WebSocket,				// The Socket Connection (ws)
+    process?: Deno.Process,         // The child process of the room server.
 	roomsOpen: number,				// # of Rooms on Room Server
 	playerCount: number,			// # of players in the Room Server (may be estimated)
 	
@@ -40,13 +41,13 @@ export default class LobbyServer {
         
         // Prepare Room Servers
 		LobbyServer.roomServers = {};
-		LobbyFuncRoomServers.setupRoomServers();
+		LobbyFuncRoomServers.setupAllRoomServers();
 
 		// Build Lobby Server
 		this.buildServer();
 		
 		// Run Server Loop
-		setInterval(() => this.serverLoop(), 4);
+        setInterval(() => this.serverLoop(), 4);
 	}
 	
 	private serverLoop() {

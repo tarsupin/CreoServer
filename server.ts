@@ -15,7 +15,7 @@ import { config } from './config.ts';
 let port = config.ports.Lobby;
 
 // Retrieve CLI Arguments
-for( let j = 3; j < Deno.args.length; j++ ) {
+for( let j = 0; j < Deno.args.length; j++ ) {
 	
 	const last = Deno.args[j - 1];
 	const val = Deno.args[j];
@@ -29,6 +29,9 @@ for( let j = 3; j < Deno.args.length; j++ ) {
 		}
 	}
 }
+
+console.log("Deno Args")
+console.log(Deno.args);
 
 // Server Start Message
 const isLobby = port === config.ports.Lobby;

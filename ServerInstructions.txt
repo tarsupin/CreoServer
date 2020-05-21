@@ -1,11 +1,20 @@
 
-// Location of Deno
-C:\Users\nerdy\.deno
+https://doc.deno.land/          // Runtime API Documentation
+https://deno.land/typedoc
 
-// Location of Web
+// Locations
+C:\Users\nerdy\.deno
 C:\Users\nerdy\OneDrive\Desktop\Projects\Web
 
-// Test File
-cd C:\Users\nerdy\OneDrive\Desktop\Projects\Web\ArenaServer
 
-deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net server.ts
+// Script to Run Deno
+cd C:\Users\nerdy\OneDrive\Desktop\Projects\Web\ArenaServer
+deno run --allow-env --allow-run --allow-write --allow-read --allow-plugin --allow-net server.ts
+
+
+// Run Room Servers
+deno run --allow-env --allow-run --allow-write --allow-read --allow-plugin --allow-net server.ts -port 8001
+
+
+// Find Port
+netstat -na | find "8001"

@@ -23,13 +23,13 @@ export class WebSocketServer extends EventEmitter {
                     headers,
                 });
                 
-                const ws: WebSocket = new WebSocket();
+                const ws: WebSocket = new WebSocket("Lobby");
                 ws.open(sock);
                 this.clients.add(ws);
                 this.emit("connection", ws);
             
             } catch (err) {
-                console.error(`failed to accept websocket: ${err}`);
+                console.error(`Failed to accept websocket: ${err}`);
                 await req.respond({ status: 400 });
             }
         }
@@ -38,22 +38,36 @@ export class WebSocketServer extends EventEmitter {
 
 export class WebSocket extends EventEmitter {
     webSocket?: STDWebSocket;
+    
+    endpoint?: string;
+    name: string;
+    isConnected: boolean;
+    
     data: any;
     
-    constructor(private endpoint?: string) {
+    constructor(name: string, endpoint?: string) {
         super();
+        
+        this.endpoint = endpoint;
+        this.name = name;
+        this.isConnected = false;
+        
         this.data = {};
-        if (this.endpoint !== undefined) {
+        
+        if(endpoint != undefined) {
             this.createSocket(endpoint);
         }
     }
     
-    async createSocket(endpoint?: string) {
+    async createSocket(endpoint: string) {
         try {
             const webSocket = await connectWebSocket(this.endpoint!);
             this.open(webSocket);
+            this.isConnected = true;
+            console.log("Connected to `" + this.name + "` at " + endpoint);
         } catch {
-            console.log("Unable to connect to " + endpoint);
+            this.isConnected = false;
+            console.log("Unable to connect to `" + this.name + "` at " + endpoint);
         }
     }
     
@@ -89,21 +103,23 @@ export class WebSocket extends EventEmitter {
                 // Close
                 else if (isWebSocketCloseEvent(ev)) {
                     const { code, reason } = ev;
+                    this.isConnected = false;
                     this.emit("close", code);
                 }
             }
             
         } catch (err) {
             this.emit("close", err);
+            this.isConnected = false;
             if (!sock.isClosed) {
                 await sock.close(1000).catch(console.error);
             }
         }
     }
-
+    
     async ping(message?: string | Uint8Array) { return this.webSocket!.ping(message); }
     async send(message: string | Uint8Array) { return this.webSocket!.send(message); }
-    async close(code = 1000, reason?: string): Promise<void> { return this.webSocket!.close(code, reason!); }
-    async closeForce() { return this.webSocket!.closeForce(); }
+    async close(code = 1000, reason?: string): Promise<void> { this.isConnected = false; return this.webSocket!.close(code, reason!); }
+    async closeForce() { this.isConnected = false; return this.webSocket!.closeForce(); }
     get isClosed(): boolean | undefined { return this.webSocket!.isClosed; }
 }

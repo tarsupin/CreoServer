@@ -43,7 +43,10 @@ export const config = {
 			8007: "Arya",
 			8008: "Prairie",
 			8009: "Collier",
-			// Doctress, Ye
+			8010: "Shayla",
+			8011: "Avalon",
+			8012: "Doctress",
+			// Ye
 		}
 	},
 	redis: {

@@ -21,73 +21,116 @@ export default abstract class LobbyFuncRoomServers {
 		
 		return Math.floor(Math.random() * (end - start)) + start;
 	}
-	
-	static setupRoomServers() {
+    
+    // Loops through available Room Servers and makes sure they're online.
+    // Attempts to initialize Room Servers if they're not available.
+	static async setupAllRoomServers() {
 		const ports = config.ports as any;
-		
+        
 		for( let port = ports.RoomServerStart; port <= ports.RoomServerEnd; port++ ) {
-			const roomName = ports.RoomServers[port];
-			
-			// Verify the Room Server has been configured (named).
-			if(!roomName) { continue; }
-			
-			LobbyServer.roomServers[port] = {
-				name: roomName,
-				isOnline: false,
-				conn: null,
-				roomsOpen: 0,
-				playerCount: 0,
-				rooms: {},
-			};
-			
-			this.connectRoomServer(port);
+			LobbyFuncRoomServers.setupRoomServer(port);
 		}
-	}
+    }
+    
+    static async setupRoomServer( port: number ) {
+		const ports = config.ports as any;
+        const roomName = ports.RoomServers[port];
+        
+        // Verify the Room Server has been configured (named).
+        if(!roomName) { return; }
+        
+        // Prepare Room Server Data
+        let roomServer = LobbyServer.roomServers[port];
+        if(!roomServer || !roomServer.name || !roomServer.conn) {
+            
+            LobbyServer.roomServers[port] = {
+                name: roomName,
+                isOnline: false,
+                conn: await new WebSocket(roomName, 'ws://' + config.server.local + ':' + port),
+                process: undefined,
+                roomsOpen: 0,
+                playerCount: 0,
+                rooms: {},
+            };
+            
+            console.log("Attempting to connect to Room Server `" + roomName + "` on port " + port + ".");
+            
+            // Build Commands for the Room Server, if it's online:
+            await LobbyFuncRoomServers.buildRoomServerCommands(port);
+        }
+        
+        // Initiate Room Server, if unavailable
+        if(LobbyServer.roomServers[port].conn.isConnected == false) {
+            await LobbyFuncRoomServers.initiateLocalRoomServer(port);
+        }
+    }
 	
-	// Pings a Room Server; updates data if appropriate.
-	static pingRoomServer( port: number ) {
+	// Builds Commands for Room Server Connection
+	static buildRoomServerCommands( port: number ) {
 		let roomServer = LobbyServer.roomServers[port];
-		if(!roomServer || !roomServer.name || !roomServer.conn) { return; }
-		
-		const conn = roomServer.conn;
-		if(conn.readyState !== conn.OPEN) { return; }
-		
-		// Ping the Room Server
-		conn.ping(true, true, () => {
-			console.log("Received Ping Response from Room Server " + roomServer.name);
-			roomServer.isOnline = true;
-		});
-	}
-	
-	// Attempt to Create Room Server Connection
-	static connectRoomServer( port: number ) {
-		let roomServer = LobbyServer.roomServers[port];
-		if(!roomServer || !roomServer.name) { return; }
+		if(!roomServer || !roomServer.name || !roomServer.conn.isConnected) { return; }
         
-        console.log("Attempting to connect to Room Server `" + roomServer.name + "` on port " + port);
+        roomServer.conn.on("connection", (ws: WebSocket) => {
+            
+            // // Create New Player
+            // let pid = LobbyFuncPlayers.addPlayer();
+            // // TODO: Need to add session data to link the client and server, so it can remember the session.
+            
+            // ws.data.playerId = pid;
+            
+            // When User Sends Binary Data
+            ws.on("bytes", (bytes: Uint8Array) => {
+                // LobbyFuncCommands.ReceiveByteCommand(ws, bytes);
+            });
+            
+            ws.on("open", () => {
+                ws.send("LobbyServer Welcomes RoomServer " + roomServer.name + ".");
+            });
+            
+            ws.on("message", (message: string) => {
+                console.log("RoomServer " + roomServer.name + " Says: " + message);
+            });
+            
+			// When User Disconnects
+			ws.on("close", () => {
+				// console.log("Connection Closed");
+			});
+        });   
+    }
+    
+    // Trying to start sub-process with Deno, but so far it doesn't seem capable.
+    // For now, will need to start on my own.
+    static async initiateLocalRoomServer(port: number) {
+        let roomServer = LobbyServer.roomServers[port];
+		if(!roomServer || !roomServer.name || !roomServer.conn.isConnected) { return; }
         
-		// Create WebSocket Client
-        roomServer.conn = new WebSocket('ws://' + config.server.local + ':' + port);
-        
-        roomServer.conn.on("error", (error: any) => {
-			if(config.local) {
-				if(error.code === "ECONNREFUSED") {
-					console.log("RoomServer " + roomServer.name + " (Port " + port + ") refused connection.");
-					roomServer.conn = null;
-				} else {
-					console.log("----------- WebSocket Error -----------");
-					console.log(error);
-				}
-			}
+        const process = Deno.run({
+            cmd: [
+                "deno",
+                "run",
+                "--allow-write",
+                "--allow-read",
+                "--allow-net",
+                "server.ts",
+                "-port",
+                port.toString()
+            ],
         });
         
-        roomServer.conn.on("open", () => {
-            roomServer.conn.send("LobbyServer Welcomes RoomServer " + roomServer.name + ".");
-        });
+        const { code } = await process.status();
         
-        roomServer.conn.on("message", (message: string) => {
-            console.log("RoomServer " + roomServer.name + " Says: " + message);
-        });
-	}
-	
+        // Success
+        if(code == 0) {
+            console.log("Launched Room Server `" + roomServer.name + "` on port " + port + ". PID: " + process.pid);
+            roomServer.process = process;
+        }
+        
+        // Failure
+        else {
+            console.log("Failed to launch Room Server `" + roomServer.name + "` on port " + port + ".");
+        }
+        
+        // Attempt to Build Server Commands for this new Server
+        await LobbyFuncRoomServers.buildRoomServerCommands(port);
+    }
 }
