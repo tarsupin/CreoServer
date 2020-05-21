@@ -1,8 +1,8 @@
-import PlayerLobby from "./PlayerLobby.ts";
 import Lobby from "./Lobby.ts";
-import { config } from "../config.ts";
 import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
 import { PlayerRank } from "../WebServer/GameTypes.ts";
+import Activity from "./Activity.ts";
+import LobbyFuncRoomServers from "./LobbyFuncRoomServers.ts";
 
 export default abstract class LobbyFuncRooms {
     
@@ -19,24 +19,12 @@ export default abstract class LobbyFuncRooms {
 	static addRoom() {
 		
 		// Identify a Room Server to play on:
-		const port = this.getAvailableRoomServer();
+		const port = LobbyFuncRoomServers.getAvailableRoomServer();
 		
 		// Communicate with the Room Server (to create the room)
 		
 		// Instruct players to join room, and treat them as having done so.
 		
-	}
-	
-	// Returns a Room Server
-	static getAvailableRoomServer() {
-		
-		// For now, just randomize the room server selection.
-		// TODO LOW PRIORITY: Optimize room server selection.
-		const ports = config.ports;
-		const start = ports.RoomServerStart;
-		const end = ports.RoomServerEnd
-		
-		return Math.floor(Math.random() * (end - start)) + start;
 	}
 	
 	// static removeRoom( roomId: number ): boolean {
@@ -161,7 +149,7 @@ export default abstract class LobbyFuncRooms {
 	*/
 	static determineNextRoomSize( forceQueued: boolean = false ): number {
 		
-		const ppm = Lobby.activity.ppm;
+		const ppm = Activity.ppm;
 		const available = forceQueued ? LobbyFuncPlayers.playersIdle + LobbyFuncPlayers.playersQueued : LobbyFuncPlayers.playersIdle;
 		
 		// If there aren't enough players available, cannot create a room.

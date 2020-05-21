@@ -1,10 +1,14 @@
-import WebServer from "../WebServer/WebServer.ts";
 import Timer from "../WebServer/Timer.ts";
+import { WebSocketServer } from "../WebServer/WebSocket.ts";
 
-export default class RoomServer extends WebServer {
+export default class RoomServer {
+    readonly wss: any;
 	
 	constructor( port: number ) {
-		super( port );
+        
+        // Prepare Socket Server
+        this.wss = new WebSocketServer(port);
+        
 		this.buildServer();
 		setInterval(() => this.serverLoop(), 4);
 	}
@@ -23,8 +27,8 @@ export default class RoomServer extends WebServer {
 		console.log("Building Room");
 		
 		this.wss.on('connection', ( ws: any, req: any ) => {
-			const ip = this.getIPFromConnection( req );
-			console.log("connection from " + ip);
+			// const ip = this.getIPFromConnection( req );
+			// console.log("connection from " + ip);
 			
 			// When User Receives a Message
 			// Automatically converts message to string (including from Binary Data).

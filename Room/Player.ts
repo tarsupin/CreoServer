@@ -5,7 +5,7 @@ export default class Player {
 	
 	// Identification & Assignment
 	pid: number;				// The Player ID, as assigned by the server.
-	room: Room;					// The Room that a user is assigned to.
+	roomId: number;				// The Room that a user is assigned to.
 	
 	// Important Settings
 	spectate: boolean;			// If true, enter games in spectate mode. Doesn't add to player count. Max 4 spectators.
@@ -20,7 +20,7 @@ export default class Player {
 		this.pid = pid;
 		
 		// Initialize Player Values
-		this.room = null;
+		this.roomId = 0;
 		this.spectate = false;
 		this.rank = PlayerRank.Guest;
 		this.pingAvg = 5;

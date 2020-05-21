@@ -1,5 +1,6 @@
 import PlayerLobby from "./PlayerLobby.ts";
 import Lobby from "./Lobby.ts";
+import Activity from "./Activity.ts";
 
 export default abstract class LobbyFuncPlayers {
     
@@ -93,7 +94,7 @@ export default abstract class LobbyFuncPlayers {
 		if(!player || !(player instanceof PlayerLobby)) { return 0; }
 		
 		Lobby.players[player.pid] = player;
-		Lobby.activity.playerJoined();
+		Activity.playerJoined();
 		
 		return player.pid;
     }
@@ -106,7 +107,7 @@ export default abstract class LobbyFuncPlayers {
 		if(!player || !(player instanceof PlayerLobby)) { return false; }
 		
 		player.disconnect();
-		Lobby.activity.playerDisconnected();
+		Activity.playerDisconnected();
 		delete Lobby.players[pid];
 		
 		return true;

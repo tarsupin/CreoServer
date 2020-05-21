@@ -1,4 +1,3 @@
-import PlayerLobby from "./PlayerLobby.ts";
 
 /*
 	The Activity Tracker tracks recent activity in the lobby, such as PPM (Players Per Minute)
@@ -7,52 +6,44 @@ import PlayerLobby from "./PlayerLobby.ts";
 		- As activity increases, the lobby will speed up room creation and create larger rooms.
 */
 
-export default class Activity {
+export default abstract class Activity {
 	
-	readonly timeStarted: number;		// The timestamp of when the lobby's activity tracker was first created.
-	private minuteInt: number;			// The current minute, as an incrementing integer.
-	private minuteJoined: number;		// The number of players that have joined this minute.
-	
-	public ppm: number;					// Players Per Minute Score.
-	
-	constructor() {
-		this.timeStarted = Date.now();
-		this.ppm = 0;
-		this.minuteInt = 0;
-		this.minuteJoined = 0;
-	}
+	static timeStarted: number = Date.now();	// The timestamp of when the lobby's activity tracker was first created.
+	static minuteInt: number = 0;			    // The current minute, as an incrementing integer.
+	static minuteJoined: number = 0;		    // The number of players that have joined Activity minute.
+	static ppm: number = 0;					    // Players Per Minute Score.
 	
 	// Five Second Tick
-	activityTick() {
-		const last = Date.now() - this.timeStarted;
-		const minuteNum = Math.floor(last / 60000);
+	static activityTick() {
+		const last = Date.now() - Activity.timeStarted;
+		const minuteNum = Math.floor(last / 60000);     // Date.now() returns in ms, so 60000 = 60 seconds.
 		
 		// If the next minute has passed, increment the counter, and update the PPM.
-		if(minuteNum !== this.minuteInt) {
-			this.minuteInt = minuteNum;
-			this.minuteJoined = 0;
-			this.updatePPM();
+		if(minuteNum !== Activity.minuteInt) {
+			Activity.minuteInt = minuteNum;
+			Activity.minuteJoined = 0;
+			Activity.updatePPM();
 		}
 	}
 	
 	// A player is considered to "Join" every time they return to the lobby.
-	public playerJoined() {
-		this.minuteJoined++;
+	static playerJoined() {
+		Activity.minuteJoined++;
 	}
 	
 	// A player is ONLY considered to disconnect when they are removed from the lobby. NOT when they enter a room.
-	// This reduces the minuteJoined property because players that leave the lobby can't be considered in the PPM.
-	public playerDisconnected() {
-		this.minuteJoined--;
+	// Activity reduces the minuteJoined property because players that leave the lobby can't be considered in the PPM.
+	static playerDisconnected() {
+		Activity.minuteJoined--;
 	}
 	
-	public updatePPM() {
-		const currentPPM = this.minuteInt / this.minuteJoined;
-		this.ppm = Math.round((this.ppm + currentPPM) / 2);
+	static updatePPM() {
+		const currentPPM = Activity.minuteInt / Activity.minuteJoined;
+		Activity.ppm = Math.round((Activity.ppm + currentPPM) / 2);
 		
 		// If the current PPM was 0, lobby could be disabled. Repeat the update for extra tolerance.
 		if(currentPPM === 0) {
-			this.ppm = Math.round((this.ppm + currentPPM) / 2);
+			Activity.ppm = Math.round((Activity.ppm + currentPPM) / 2);
 		}
 	}
 }

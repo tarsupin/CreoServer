@@ -34,12 +34,11 @@ interface GroupData {
 	idle: number,
 }
 
-export default class Lobby {
+export default abstract class Lobby {
 	
 	static server: LobbyServer;				// Reference to the LobbyServer class.
-	static activity: Activity;				// Tracks the recent activity of the lobby.
 	static tickCounter: number;				// Track the number of ticks with modulus of 120.
-	static longestWait: number;				    // The duration in miliseconds of the longest idle time in the lobby.
+	static longestWait: number;				// The duration in miliseconds of the longest idle time in the lobby.
 	
     // Players
 	static players: { [pid: number]: PlayerLobby; }
@@ -62,11 +61,10 @@ export default class Lobby {
 		queued: number,
 	}
 	
-	constructor( server: LobbyServer ) {
+	static prepareLobby( server: LobbyServer ) {
 		
 		// Systems
 		Lobby.server = server;
-		Lobby.activity = new Activity();
 		
 		// Initialize Values
         Lobby.longestWait = 0;
@@ -101,7 +99,7 @@ export default class Lobby {
 			Lobby.tickCounter = 0;
 			
 			// Run Activity Tracker
-			Lobby.activity.activityTick();
+			Activity.activityTick();
 			
 			// Run Player Loop (counts players, identifies eligible players, etc).
 			LobbyFuncPlayers.runPlayerLoop();

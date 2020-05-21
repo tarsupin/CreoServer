@@ -1,18 +1,9 @@
 import { WebSocket, WebSocketServer } from "../WebServer/WebSocket.ts";
-import LobbyServer from "./LobbyServer.ts";
 import { config } from "../config.ts";
 
-export default class LobbyServerCommands {
+export default abstract class LobbyFuncCommands {
     
-    readonly server: LobbyServer;				// Reference to the LobbyServer class.
-    
-	constructor( server: LobbyServer ) {
-		this.server = server;
-    }
-    
-    
-    
-    public ReceiveTextCommand(ws: WebSocket, message: string): void {
+    static ReceiveTextCommand(ws: WebSocket, message: string): void {
         
         // Logging (Local Only)
         if(config.debug.active) {
@@ -25,7 +16,7 @@ export default class LobbyServerCommands {
         }
     }
     
-    public ReceiveByteCommand(ws: WebSocket, bytes: Uint8Array): void {
+    static ReceiveByteCommand(ws: WebSocket, bytes: Uint8Array): void {
         
         // Logging (Local Only)
         if(config.debug.active) {
