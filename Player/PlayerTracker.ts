@@ -6,8 +6,8 @@ import Player from "./Player.ts";
 
 export default abstract class PlayerTracker {
     
-    static playersCap = 300;                    // The maximum number of players "technically" supposed to be on the server.
-    static playersAllowedOnServer = 500;        // The true amount of players that could be on the server.
+    static playersOfficialCap = 300;            // The official maximum number of players supposed to be on the server.
+    static playersAllowedOnServer = 400;        // The true amount of players that could be on the server, if bypassing cap.
     static playerScanId: number = 1;            // Loops through the players, using this as a scan ID.
     
     static playerList: Array<Player> = new Array(PlayerTracker.playersAllowedOnServer + 1);

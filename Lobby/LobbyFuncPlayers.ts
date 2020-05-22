@@ -1,14 +1,9 @@
-import Player from "../Player/Player.ts";
 import Lobby from "./Lobby.ts";
-import Activity from "./Activity.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
+import Activity from "./Activity.ts";
 
 export default abstract class LobbyFuncPlayers {
     
-	static playersOnline: number = 0;			// All players connected to the server. Includes those in rooms.
-	static playersIdle: number = 0;				// Players that are not in a room. Includes playerQueued.
-	static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
-	
 	static runPlayerLoop() {
 		
 		LobbyFuncPlayers.resetPlayerCount();
@@ -22,7 +17,7 @@ export default abstract class LobbyFuncPlayers {
 			let player = PlayerTracker.playerList[i];
 			
 			// Update Players Counts
-			LobbyFuncPlayers.playersOnline++;
+			Activity.playersOnline++;
 			
 			// Check Group
 			if(player.group) {
@@ -42,10 +37,10 @@ export default abstract class LobbyFuncPlayers {
 			
 			// Update Idle & Queued Players
 			if(player.isIdle) {
-				LobbyFuncPlayers.playersIdle++;
+				Activity.playersIdle++;
 				
 				if(player.isQueued) {
-					LobbyFuncPlayers.playersQueued++;
+					Activity.playersQueued++;
 				} else {
 					
 					// Determine Longest Wait Time
@@ -66,56 +61,16 @@ export default abstract class LobbyFuncPlayers {
 		Lobby.longestWait = Date.now() - earliestWait;
 	}
 	
-	// Purge all players from this hub.
-	static disconnectAllPlayers() {
-		
-		// Loop through all players online and disconnect them.
-		for( let pid in PlayerTracker.playerList ) {
-			PlayerTracker.playerList[pid].disconnect();
-		}
-		
-		// Final Cleanup
-		LobbyFuncPlayers.runPlayerLoop();
-	}
-	
-	static addPlayer(): number {
-        
-        // Prepare the new player:
-        let player = PlayerTracker.getAvailablePlayer();
-        
-		// Make sure the player isn't already in the hub.
-		if(player.id == 0) { return 0; }
-		
-		PlayerTracker.playerList[player.id] = player;
-		Activity.playerJoined();
-		
-		return player.id;
-    }
-    
-	static dropPlayer( pid: number ): boolean {
-		
-		let player = PlayerTracker.playerList[pid];
-		
-		// Make sure the player is recognized in this hub.
-		if(!player || !(player instanceof Player)) { return false; }
-		
-		player.disconnect();
-		Activity.playerDisconnected();
-		delete PlayerTracker.playerList[pid];
-		
-		return true;
-    }
-    
 	static resetPlayerCount() {
-		LobbyFuncPlayers.playersOnline = 0;
-		LobbyFuncPlayers.playersIdle = 0;
-		LobbyFuncPlayers.playersQueued = 0;
+		Activity.playersOnline = 0;
+		Activity.playersIdle = 0;
+		Activity.playersQueued = 0;
 		
 		// Run Simulations (For Debugging Only)
 		if(Lobby.simulate.active) {
-			LobbyFuncPlayers.playersIdle = Lobby.simulate.idle;
-			LobbyFuncPlayers.playersQueued = Lobby.simulate.queued;
-			LobbyFuncPlayers.playersOnline = LobbyFuncPlayers.playersIdle + LobbyFuncPlayers.playersQueued;
+			Activity.playersIdle = Lobby.simulate.idle;
+			Activity.playersQueued = Lobby.simulate.queued;
+			Activity.playersOnline = Activity.playersIdle + Activity.playersQueued;
 		}
 	}
 	

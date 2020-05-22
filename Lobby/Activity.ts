@@ -7,11 +7,17 @@
 */
 
 export default abstract class Activity {
-	
+    
+    // Activity Tracking
 	static timeStarted: number = Date.now();	// The timestamp of when the lobby's activity tracker was first created.
 	static minuteInt: number = 0;			    // The current minute, as an incrementing integer.
 	static minuteJoined: number = 0;		    // The number of players that have joined Activity minute.
 	static ppm: number = 0;					    // Players Per Minute Score.
+	
+    // Player Counters
+	static playersOnline: number = 0;			// All players connected to the server. Includes those in rooms.
+	static playersIdle: number = 0;				// Players that are not in a room. Includes playerQueued.
+	static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
 	
 	// Five Second Tick
 	static activityTick() {

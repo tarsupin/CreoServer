@@ -52,7 +52,7 @@ export default abstract class RoomHandler {
 			4. Create game every 20s (or at least attempt to).
 	*/
 	static attemptRoomGenerate() {
-		const idle = LobbyFuncPlayers.playersIdle;
+		const idle = Activity.playersIdle;
 		const last = Date.now() - RoomHandler.lastRoomGenTime;
 		
 		if(idle > 16) { return RoomHandler.generateRoom(); };
@@ -63,7 +63,7 @@ export default abstract class RoomHandler {
 		// If there are less than 5 idle, start considering queued players to be idle.
 		if(idle > 5) { return; }
 		
-		const queued = LobbyFuncPlayers.playersQueued;
+		const queued = Activity.playersQueued;
 		
 		if(queued > 16 && last > 9000) { return RoomHandler.generateRoom( true ); }
 		if(queued + idle > 10 && last > 14000) { return RoomHandler.generateRoom( true ); }
@@ -90,7 +90,7 @@ export default abstract class RoomHandler {
 				- Choose Random Preference (weighted by favorites).
 	*/
 	static generateRoom( forceQueued: boolean = false ) {
-		const playerCount = LobbyFuncPlayers.playersOnline;
+		const playerCount = Activity.playersOnline;
 		const last = Date.now() - RoomHandler.lastRoomGenTime;
 		
 		// Update Recent Activity
@@ -137,7 +137,7 @@ export default abstract class RoomHandler {
 	static determineNextRoomSize( forceQueued: boolean = false ): number {
 		
 		const ppm = Activity.ppm;
-		const available = forceQueued ? LobbyFuncPlayers.playersIdle + LobbyFuncPlayers.playersQueued : LobbyFuncPlayers.playersIdle;
+		const available = forceQueued ? Activity.playersIdle + Activity.playersQueued : Activity.playersIdle;
 		
 		// If there aren't enough players available, cannot create a room.
 		if(available <= 1) { return 0; }

@@ -7,6 +7,7 @@ import { GamePreference } from "../Engine/GameTypes.ts";
 import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";
+import LobbyFuncUsers from "./LobbyFuncUsers.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -45,7 +46,7 @@ export default abstract class Lobby {
 	
     // Groups
 	static groups: { [gid: string]: GroupData } = {}	// Groups; tracks how many group players are active, idle, etc.
-	
+    
 	// Preferences; tracks which game preferences are desired.
 	static prefs: {
 		[GamePreference.Coop]: number,
@@ -105,7 +106,7 @@ export default abstract class Lobby {
         Lobby.wss.on("connection", (ws: WebSocket) => {
             
             // Create New Player
-            let pid = LobbyFuncPlayers.addPlayer();
+            let pid = LobbyFuncUsers.addUser();
             // TODO: Need to add session data to link the client and server, so it can remember the session.
             
             ws.data.playerId = pid;
