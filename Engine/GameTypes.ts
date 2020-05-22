@@ -1,4 +1,28 @@
 
+export const enum ArenaSize {
+    Undeclared = 0,                 // Any Size.
+    
+    Horizontal1 = 1,                // 29x18 in size. Covers 1 page.
+    Horizontal1Plus = 2,            // 44x18 in size. Covers 1.5 pages.
+    Horizontal2 = 3,                // 58x18 in size. Covers 2 pages. Regulation field size?
+    Horizontal2Plus = 4,            // 73x18 in size. Covers 2.5 pages.
+    Horizontal3 = 5,                // 87x18 in size. Covers 3 pages.
+    
+    Vertical2 = 11,                 // 29x36 in size. Covers 2 vertical pages.
+    Vertical3 = 12,                 // 29x54 in size. Covers 3 vertical pages.
+    Vertical4 = 13,                 // 29x72 in size. Covers 4 vertical pages.
+    
+    Field1 = 21,                    // 40x22 in size.
+    Field2 = 22,                    // 50x24 in size.
+    Field3 = 23,                    // 60x26 in size.
+    Field4 = 24,                    // 70x28 in size.
+    Field5 = 25,                    // 80x30 in size.
+    
+    Rect1 = 31,                     // 50x25 in size.
+    Rect2 = 32,                     // 70x35 in size.
+    Rect3 = 33,                     // 90x45 in size.
+}
+
 export const enum GameType {
 	Coop = 1,				// Players cooperate to finish. Traditional gameplay.
 	Roles = 2,				// Players cooperate, but have different roles, abilities, etc.
@@ -12,13 +36,25 @@ export const enum GameType {
 	TeamBattle = 20,		// Players battle each other on teams. Work with allies, defeat enemies.
 	BossBattle = 21,		// Boss Battle challenge. One team is a single boss player with major advantage.
 	CTF = 22,				// Two teams play capture the flag.
-	Football = 23,			// Two teams play soccer against each other. Score goals to win. Time limit.
+	NinjaBall = 23,			// Two teams play soccer against each other. Score goals to win. Time limit.
 	
 	Playtest = 50,			// Author of level spectates while players play. Earn Playtesting Credits.
 	
 	// TERRITORY			// World Map where you compete over territories. Persistent Game.
 	// GM Modes				// GM plays against players.
 	// Tournaments			// Tournament Games
+}
+
+export const enum League {
+    Unrated = 0,            
+    Training = 1,           // Players with very low talent. Bottom 20%. Probably children.
+    Bronze = 2,             // Players with minimal talent. 20-40%. Likely young or inexperienced.
+    Silver = 3,             // Players with minor talent. 40-60%.
+    Gold = 4,               // Players with moderate talent. 60-80%.
+    Platinum = 5,           // Players with significant talent. 80-90%.
+    Diamond = 6,            // Players with extraordinary talent. 90-95%.
+    Master = 7,             // Players that are best in the league. 95-99%
+    Grandmaster = 8,        // Players that are indisputable champions. 99-100%.
 }
 
 // Game Type Groups contain multiple game types. Users can indicate these as preferences for what rooms are created.
@@ -61,4 +97,11 @@ export const enum PlayerRank {
 	Creator = 7,
 	Admin = 8,
 	Superuser = 10,
+}
+
+export const enum RespawnType {
+    Standard = 0,           // The standard respawn; whichever location is appropriate for the game.
+    Ghost = 1,              // Respawn as a ghost. Cannot interact, but may be visible.
+    Spectator = 2,          // Respawn as a spectator. No interaction.
+    NoRespawn = 3,          // Don't respawn.
 }

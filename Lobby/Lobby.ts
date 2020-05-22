@@ -89,8 +89,33 @@ export default abstract class Lobby {
 	static serverLoop() {
 		Timer.update();
 		
+        // Runs every 30 frames (0.5 seconds)
 		if(Timer.slowTick) {
-			Lobby.slowTick();
+            
+            // Run Activity Tracker (every 5 seconds; 1st cycle)
+            if(Lobby.tickCounter == 1) {
+                Activity.activityTick();
+            }
+            
+            // Run Player Loop (every 5 seconds; 2nd cycle)
+            // Counts players, identifies eligible players, etc.
+            else if(Lobby.tickCounter == 2) {
+                PlayerTracker.runPlayerScan();
+            }
+            
+            // Add Players to Open Games (every 5 seconds, 3rd cycle)
+            else if(Lobby.tickCounter == 3) {
+                // RoomHandler.attemptRoomGenerate();
+            }
+            
+            // Attempt Room Creation (every 5 seconds; 8th cycle)
+            // Will only create a room if all tests check.
+            else if(Lobby.tickCounter == 8) {
+                RoomHandler.attemptRoomGenerate();
+            }
+            
+            // Update Tick Counter
+            if(Lobby.tickCounter < 10) { Lobby.tickCounter++; } else { Lobby.tickCounter = 0; }
 		}
 		
 		// Benchmarking
@@ -135,35 +160,6 @@ export default abstract class Lobby {
 			});
         });
     }
-    
-    // Runs every 30 frames (0.5 seconds)
-	static slowTick() {
-        
-        // Run Activity Tracker (every 5 seconds; 1st cycle)
-        if(Lobby.tickCounter == 1) {
-            Activity.activityTick();
-        }
-        
-        // Run Player Loop (every 5 seconds; 2nd cycle)
-        // Counts players, identifies eligible players, etc.
-        else if(Lobby.tickCounter == 2) {
-            PlayerTracker.runPlayerScan();
-        }
-        
-        // Add Players to Open Games (every 5 seconds, 3rd cycle)
-        else if(Lobby.tickCounter == 3) {
-            // RoomHandler.attemptRoomGenerate();
-        }
-		
-        // Attempt Room Creation (every 5 seconds; 8th cycle)
-        // Will only create a room if all tests check.
-        else if(Lobby.tickCounter == 8) {
-            RoomHandler.attemptRoomGenerate();
-        }
-        
-        // Update Tick Counter
-        if(Lobby.tickCounter < 10) { Lobby.tickCounter++; } else { Lobby.tickCounter = 0; }
-	}
     
 	static resetGroups() {
 		for( let i in Lobby.groups ) {

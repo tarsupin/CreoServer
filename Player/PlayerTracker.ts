@@ -15,8 +15,8 @@ export default abstract class PlayerTracker {
     static playerList: Array<Player> = new Array(PlayerTracker.playersAllowedOnServer + 1);
     
     // Indexes
-    static idlePaid: Array<Player> = new Array<Player>(16);
-    static idleGuests: Array<Player> = new Array<Player>(16);
+    static idlePaid: Array<Player> = new Array<Player>(16);         // Updates every 5 seconds (Player Scan)
+    static idleGuests: Array<Player> = new Array<Player>(16);       // Updates every 5 seconds (Player Scan)
     
 	static getAvailablePlayer(): Player {
         
