@@ -65,6 +65,7 @@ export default abstract class Lobby {
         guests: number,
         paid: number,
 		queued: number,
+		ppm: number,
 	}
 	
 	static initializeLobby() {
@@ -197,6 +198,7 @@ export default abstract class Lobby {
             guests: 0,
             paid: 0,
 			queued: 0,
+			ppm: 0,
         }
         
         const sim = config.debug ? config.debug.simulate : null;
@@ -204,7 +206,8 @@ export default abstract class Lobby {
             Lobby.simulate.active = true;
             Lobby.simulate.guests = sim.guests;
             Lobby.simulate.paid = sim.paid;
-            Lobby.simulate.queued = sim.queued;
+			Lobby.simulate.queued = sim.queued;
+			Lobby.simulate.ppm = sim.ppm;
         }
 	}
 }

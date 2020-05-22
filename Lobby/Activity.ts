@@ -35,17 +35,30 @@ export default abstract class Activity {
 		[League.Master]: number,
 		[League.Grandmaster]: number,
 		[index: number]: any,
+	} = {
+		[League.Unrated]: 0,
+		[League.Training]: 0,
+		[League.Bronze]: 0,
+		[League.Silver]: 0,
+		[League.Gold]: 0,
+		[League.Platinum]: 0,
+		[League.Diamond]: 0,
+		[League.Master]: 0,
+		[League.Grandmaster]: 0,
 	};
 	
     // Reset Player Counters (Runs every 5 seconds during player scan)
     static resetPlayerCounts() {
-
+		
+		// Reset Player Counts
 		Activity.playersOnline = 0;
 		Activity.playersIdle = 0;
 		Activity.playersIdleGuest = 0;
 		Activity.playersIdlePaid = 0;
 		Activity.playersQueued = 0;
-
+		
+		// Reset League Detection
+		Activity.leaguesIdle[League.Unrated] = 0;
 		Activity.leaguesIdle[League.Training] = 0;
 		Activity.leaguesIdle[League.Bronze] = 0;
 		Activity.leaguesIdle[League.Silver] = 0;
@@ -54,9 +67,10 @@ export default abstract class Activity {
 		Activity.leaguesIdle[League.Diamond] = 0;
 		Activity.leaguesIdle[League.Master] = 0;
 		Activity.leaguesIdle[League.Grandmaster] = 0;
-
+		
 		// Run Simulations (For Debugging Only)
 		if(Lobby.simulate.active) {
+			Activity.ppm = Lobby.simulate.ppm;
 			Activity.playersIdleGuest = Lobby.simulate.guests;
 			Activity.playersIdlePaid = Lobby.simulate.paid;
 			Activity.playersQueued = Lobby.simulate.queued;

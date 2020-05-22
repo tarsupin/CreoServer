@@ -8,7 +8,6 @@ import Mapper from "../Engine/Mapper.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
 import Player from "../Player/Player.ts";
 
-
 export default abstract class RoomHandler {
     
 	static lastRoomGenTime: number = 0;				// The last timestamp of room creation.
@@ -18,6 +17,92 @@ export default abstract class RoomHandler {
 	static leagueMin: League = League.Unrated;
 	static leagueMax: League = League.Grandmaster;
 	
+	/*
+		This method determines if it is time to create a new room.
+		
+		Frequency of Creation:
+			1. If Idle Players >= 16, create game instantly.
+			2. If Idle Players >= 10, create game every 10s.
+			3. If Idle Players >= 5, create game every 15s.
+	*/
+	static attemptRoomGenerate() {
+		
+		const idle = Activity.playersIdle;
+		const last = Date.now() - RoomHandler.lastRoomGenTime;
+		
+		// Must have enough idle players to generate a room.
+		if(Activity.playersIdle < 2) { return; }
+		
+		if(idle >= 16) { return RoomHandler.generateRoom(); };
+		if(idle >= 10 && last > 9000) { return RoomHandler.generateRoom(); }
+		if(idle >= 5 && last > 14000) { return RoomHandler.generateRoom(); }
+		if(last > 19000) { return RoomHandler.generateRoom(); }
+		
+		// If there are less than 5 idle, start considering queued players to be idle.
+		if(idle > 5) { return; }
+		
+		const queued = Activity.playersQueued;
+		
+		if(queued > 16 && last > 9000) { return RoomHandler.generateRoom( true ); }
+		if(queued + idle > 10 && last > 14000) { return RoomHandler.generateRoom( true ); }
+		if(queued + idle > 5 && last > 19000) { return RoomHandler.generateRoom( true ); }
+	}
+	
+	/*
+		This method generates a new room for players.
+		
+		Information Available:
+			- Time Since Last Room Generated
+			- Players Online
+			- Players Idle (in Lobby, waiting for game)
+			- Players Queued (waiting on a specific game, or for group)
+			- Player Groups & Group Activity
+			- Players Per Minute (average # of players joining lobby each minute)
+			- Longest Idle Time on Lobby (only counts idle players; ignores players waiting for specific games)
+			- Game Preferences Chosen by Players
+			- Player Leagues
+		
+		Order of Decisions:
+			1. Priority: Loading Groups Together
+				- Choose Random Preference among group (weighted by favorites).
+			2. Secondary Priority: Player Preferences
+				- Choose Random Preference (weighted by favorites).
+	*/
+	static generateRoom( forceQueued: boolean = false ) {
+		
+		const last = Date.now() - RoomHandler.lastRoomGenTime;
+		
+		// Identify Idle Players
+		// Activity.playersIdlePaid;
+		// Activity.playersIdleGuest;
+		
+		// Update Recent Activity
+		RoomHandler.lastRoomGenTime = Date.now();
+		RoomHandler.roomSize = RoomHandler.determineNextRoomSize();
+		
+		// Limit the room size to the number of idle players.
+		if(Activity.playersIdle > RoomHandler.roomSize) {
+			RoomHandler.roomSize = Activity.playersIdle;
+		}
+		
+		// Determine League Allowances
+		if(Lobby.leagueMin == League.Unrated) {
+			RoomHandler.determineLeagues();
+		} else {
+			RoomHandler.leagueMin = Lobby.leagueMin;
+			RoomHandler.leagueMax = Lobby.leagueMax;
+		}
+		
+		// Determine Game Type
+		let gameClass = RoomHandler.determineGameClass();
+		
+		// Determine Level ID
+		let levelId = RoomHandler.determineLevelId(gameClass);
+		
+		// Create New Room
+		RoomHandler.addRoom(gameClass, levelId);
+	}
+	
 	// Method contacts a server and instructs it to create a new room.
 	// When the room is created, it gives instructions to players to join.
 	static addRoom(gameClass: GameClass, levelId: string) {
@@ -26,15 +111,15 @@ export default abstract class RoomHandler {
 		let room = RoomTracker.getAvailableRoom();
 		
 		// Verify that the room is valid:
-		if(room.roomId == 0) {
-			return;
-		}
+		if(room.roomId == 0) { return; }
 		
 		// Setup Room
 		room.prepareRoom(gameClass, levelId);
 		
 		// Instruct players to join room, and treat them as having done so.
+		RoomHandler.prepareRoomPlayers(room);
 		
+		console.log(room);
     }
 	
 	// Load Players into a Room
@@ -83,91 +168,6 @@ export default abstract class RoomHandler {
 	static attachPlayerToRoom(room: Room, player: Player) {
 		player.roomId = room.roomId;
 		room.players?.push(player);
-	}
-	
-	/*
-		This method determines if it is time to create a new room.
-		
-		Frequency of Creation:
-			1. If Idle Players >= 16, create game instantly.
-			2. If Idle Players >= 10, create game every 10s.
-			3. If Idle Players >= 5, create game every 15s.
-	*/
-	static attemptRoomGenerate() {
-		const idle = Activity.playersIdle;
-		const last = Date.now() - RoomHandler.lastRoomGenTime;
-		
-		if(idle >= 16) { return RoomHandler.generateRoom(); };
-		if(idle >= 10 && last > 9000) { return RoomHandler.generateRoom(); }
-		if(idle >= 5 && last > 14000) { return RoomHandler.generateRoom(); }
-		if(last > 19000) { return RoomHandler.generateRoom(); }
-		
-		// If there are less than 5 idle, start considering queued players to be idle.
-		if(idle > 5) { return; }
-		
-		const queued = Activity.playersQueued;
-		
-		if(queued > 16 && last > 9000) { return RoomHandler.generateRoom( true ); }
-		if(queued + idle > 10 && last > 14000) { return RoomHandler.generateRoom( true ); }
-		if(queued + idle > 5 && last > 19000) { return RoomHandler.generateRoom( true ); }
-	}
-	
-	/*
-		This method generates a new room for players.
-		
-		Information Available:
-			- Time Since Last Room Generated
-			- Players Online
-			- Players Idle (in Lobby, waiting for game)
-			- Players Queued (waiting on a specific game, or for group)
-			- Player Groups & Group Activity
-			- Players Per Minute (average # of players joining lobby each minute)
-			- Longest Idle Time on Lobby (only counts idle players; ignores players waiting for specific games)
-			- Game Preferences Chosen by Players
-			- Player Leagues
-		
-		Order of Decisions:
-			1. Priority: Loading Groups Together
-				- Choose Random Preference among group (weighted by favorites).
-			2. Secondary Priority: Player Preferences
-				- Choose Random Preference (weighted by favorites).
-	*/
-	static generateRoom( forceQueued: boolean = false ) {
-		
-		const last = Date.now() - RoomHandler.lastRoomGenTime;
-		
-		// Identify Idle Players
-		const idleCount = Activity.playersIdle;
-		// Activity.playersIdlePaid;
-		// Activity.playersIdleGuest;
-		
-		// Update Recent Activity
-		RoomHandler.lastRoomGenTime = Date.now();
-		RoomHandler.roomSize = RoomHandler.determineNextRoomSize();
-		
-		// Determine League Allowances
-		if(Lobby.leagueMin == League.Unrated) {
-			RoomHandler.determineLeagues();
-		} else {
-			RoomHandler.leagueMin = Lobby.leagueMin;
-			RoomHandler.leagueMax = Lobby.leagueMax;
-		}
-		
-		// Determine Game Type
-		let gameClass = RoomHandler.determineGameClass();
-		
-		// Determine Level ID
-		let levelId = RoomHandler.determineLevelId(gameClass);
-		
-		// Create New Room
-		RoomHandler.addRoom(gameClass, levelId);
-		
-		// Load the PAID players first. They get priority.
-		// PlayerTracker.idlePaid; // The collection of idle paid players to choose from.
-		
-		// Then load the GUEST players.
-		// PlayerTracker.idleGuests; // The collection of idle guest players to choose from.
-		
 	}
 	
 	// Determine Game Type
@@ -231,10 +231,10 @@ export default abstract class RoomHandler {
 		This method determines the size of the room to create based on lobby activity.
 		The result is randomized to an extent, but can create higher-sized rooms during high ppm.
 	*/
-	static determineNextRoomSize( forceQueued: boolean = false ): number {
+	static determineNextRoomSize(): number {
 		
 		const ppm = Activity.ppm;
-		const available = forceQueued ? Activity.playersIdle + Activity.playersQueued : Activity.playersIdle;
+		const available = Activity.playersIdle;
 		
 		// If there aren't enough players available, cannot create a room.
 		if(available <= 1) { return 0; }
