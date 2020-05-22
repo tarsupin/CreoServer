@@ -20,7 +20,7 @@ export default abstract class Activity {
 	static playersIdle: number = 0;				// Players that are not in a room. Includes playerQueued.
 	static playersIdlePaid: number = 0;			// Idle Paid players.
 	static playersIdleGuest: number = 0;		// Idle Guest players.
-	static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
+    static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
     
     // Reset Player Counters (Runs every 5 seconds during player scan)
     static resetPlayerCounts() {

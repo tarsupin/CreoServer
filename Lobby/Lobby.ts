@@ -39,7 +39,7 @@ export default abstract class Lobby {
     
     // Connection Details
     static serverPort: number = 0;          // The port for this server.
-    static wss: any;
+    static wss: WebSocketServer;
 	
 	static tickCounter: number = 0;			// Track the number of ticks with modulus of 120.
 	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
@@ -97,16 +97,16 @@ export default abstract class Lobby {
             // Run Activity Tracker (every 5 seconds; 1st cycle)
             if(Lobby.tickCounter == 1) {
                 Activity.activityTick();
-                VerboseLog.log("online: " + Activity.playersOnline);
-                VerboseLog.log("idle: " + Activity.playersIdle);
-                VerboseLog.log("idle guests: " + Activity.playersIdleGuest);
-                VerboseLog.log("idle paid: " + Activity.playersIdlePaid);
             }
             
             // Run Player Loop (every 5 seconds; 2nd cycle)
             // Counts players, identifies eligible players, etc.
             else if(Lobby.tickCounter == 2) {
                 PlayerTracker.runPlayerScan();
+                VerboseLog.log("online: " + Activity.playersOnline);
+                VerboseLog.log("idle: " + Activity.playersIdle);
+                VerboseLog.log("idle guests: " + Activity.playersIdleGuest);
+                VerboseLog.log("idle paid: " + Activity.playersIdlePaid);
             }
             
             // Add Players to Open Games (every 5 seconds, 3rd cycle)
@@ -142,11 +142,12 @@ export default abstract class Lobby {
             // Get New Player Slot
             let player = PlayerTracker.getAvailablePlayer();
             
-            player.resetToNewPlayer();
-            PlayerHandler.addWebSocket(player, ws);
+            player.assignNewPlayer(ws);
+            
+            VerboseLog.log("Logged in with Player #" + player.id);
             
             // Attach Player to WebSocket
-            ws.data.playerId = player.id;
+            ws.playerId = player.id;
             
             // When User Sends Binary Data
             ws.on("bytes", (bytes: Uint8Array) => {
@@ -154,16 +155,19 @@ export default abstract class Lobby {
             });
             
 			// When User Sends a Message
-            // Automatically converts message to string (including from Binary Data).
-            // ws.on("message", function (message: string) {});
             ws.on("message", (message: string) => {
                 LobbyFuncCommands.ReceiveTextCommand(ws, message)
             });
             
+            // Ping/Pong
+            // ws.on("ping", () => { ws.lastFrameAlive = Timer.frame; console.log("Received PING from " + ws.playerId); });
+            // ws.on("pong", () => { ws.lastFrameAlive = Timer.frame; console.log("Received PONG from " + ws.playerId); });
+            
 			// When User Disconnects
 			ws.on("close", () => {
-				// console.log("Connection Closed");
-			});
+                VerboseLog.log("Player #" + player.id + " has disconnected from the lobby.");
+                player.disconnectFromServer();
+            });
         });
     }
     

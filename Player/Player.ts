@@ -30,7 +30,7 @@ export default class Player {
 	
 	constructor( playerId: number ) {
 		this.id = playerId;
-        this.resetToNewPlayer();
+        this.resetToEmptyPlayer();
     }
     
     // Idle Detection
@@ -42,7 +42,7 @@ export default class Player {
 	setGroup( group: string ) { this.group = group; }
 	setRival( rival: string ) { this.rival = rival; }
     
-    resetToNewPlayer() {
+    resetToEmptyPlayer() {
         
         // Initialize Default Player Values
         this.isEnabled = false;
@@ -69,6 +69,19 @@ export default class Player {
         this.rival = "";
     }
     
+    assignNewPlayer( socket: WebSocket ) {
+        
+        this.resetToEmptyPlayer();
+        this.isEnabled = true;
+        
+        // Socket Connections
+        this.socket = socket;
+        socket.playerId = this.id;
+        
+        // Load Session Data
+        // TODO: Load any specifics this player has stored in their session or details.
+    }
+    
 	disconnectFromRoom() {
         this.roomId = 0;
         this.waitStartTime = Date.now();
@@ -80,11 +93,13 @@ export default class Player {
         
         // Close the Socket Connection
         if(this.socket instanceof WebSocket) {
-            this.socket.close();
+            this.socket.playerId = 0;
+            if(!this.socket.isClosed) { this.socket.close(); }
+            this.socket = undefined;
         }
         
         if(!this.isEnabled) { return; }
         
-        this.resetToNewPlayer();
+        this.resetToEmptyPlayer();
 	}
 }

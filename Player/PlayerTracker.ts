@@ -65,12 +65,19 @@ export default abstract class PlayerTracker {
         
         let curTimestamp = Date.now(); // Player with earliest waiting timestamp.
         
-		for(let nextId = 0; nextId <= PlayerTracker.playersAllowedOnServer; nextId++) {
-            
-            // Skip this player if it isn't enabled.
-            if(!PlayerTracker.isPlayerEnabled(nextId)) { continue; }
+        // Loop through the full list of players, even inactive and disabled ones.
+		for(let nextId = 1; nextId <= PlayerTracker.playersAllowedOnServer; nextId++) {
             
             let player = PlayerTracker.playerList[nextId];
+            
+            // Skip this player if it isn't enabled.
+            if(!player.isEnabled) { continue; }
+            
+            // If the player's socket is disabled, disable the player, then continue.
+            if(!player.socket || player.socket.isClosed) {
+                player.disconnectFromServer();
+                continue;
+            }
             
 			// Update Players Counts
 			Activity.playersOnline++;

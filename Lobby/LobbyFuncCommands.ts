@@ -7,7 +7,7 @@ export default abstract class LobbyFuncCommands {
         
         // Logging (Local Only)
         if(config.debug.active) {
-            console.log("Player " + ws.data.playerId + " Sent: %s", message);
+            console.log("Player " + ws.playerId + " Sent: %s", message);
             // ws.send(message);     // Echo Server
         }
         
@@ -20,7 +20,7 @@ export default abstract class LobbyFuncCommands {
         
         // Logging (Local Only)
         if(config.debug.active) {
-            console.log("Player " + ws.data.playerId + " Sent Bytes: %s", bytes.toString());
+            console.log("Player " + ws.playerId + " Sent Bytes: %s", bytes.toString());
             // ws.send(message);     // Echo Server
         }
         

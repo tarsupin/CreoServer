@@ -10,6 +10,25 @@ export class WebSocketServer extends EventEmitter {
         this.connect();
     }
     
+    // async scanForDisconnects() {
+    //     console.log(this.clients);
+        
+    //     this.clients.forEach((ws: WebSocket, ws2: WebSocket) => {
+            
+    //         // If the websocket is closed, register it as being disconnected.
+    //         if(!ws.webSocket || ws.webSocket.isClosed) {
+    //             ws.close();
+    //         }
+            
+    //         // If the socket has been inactive for too long.
+            
+    //         // In all other cases, ping the client to see if it's still around.
+    //         else {
+    //             ws.ping();
+    //         }
+    //     });
+    // }
+    
     async connect() {
         for await (const req of serve(`:${this.port}`)) {
             const { conn, r: bufReader, w: bufWriter, headers } = req;
@@ -41,18 +60,15 @@ export class WebSocket extends EventEmitter {
     
     endpoint?: string;
     name: string;
-    isConnected: boolean;
     
-    data: any;
+    // Socket Data
+    playerId: number = 0;               // If set, it is attached to a player.
     
     constructor(name: string, endpoint?: string) {
         super();
         
         this.endpoint = endpoint;
         this.name = name;
-        this.isConnected = false;
-        
-        this.data = {};
         
         if(endpoint != undefined) {
             this.createSocket(endpoint);
@@ -63,10 +79,8 @@ export class WebSocket extends EventEmitter {
         try {
             const webSocket = await connectWebSocket(this.endpoint!);
             this.open(webSocket);
-            this.isConnected = true;
             console.log("Connected to `" + this.name + "` at " + endpoint);
         } catch {
-            this.isConnected = false;
             console.log("Unable to connect to `" + this.name + "` at " + endpoint);
         }
     }
@@ -103,14 +117,12 @@ export class WebSocket extends EventEmitter {
                 // Close
                 else if (isWebSocketCloseEvent(ev)) {
                     const { code, reason } = ev;
-                    this.isConnected = false;
                     this.emit("close", code);
                 }
             }
             
         } catch (err) {
             this.emit("close", err);
-            this.isConnected = false;
             if (!sock.isClosed) {
                 await sock.close(1000).catch(console.error);
             }
@@ -119,7 +131,7 @@ export class WebSocket extends EventEmitter {
     
     async ping(message?: string | Uint8Array) { return this.webSocket!.ping(message); }
     async send(message: string | Uint8Array) { return this.webSocket!.send(message); }
-    async close(code = 1000, reason?: string): Promise<void> { this.isConnected = false; return this.webSocket!.close(code, reason!); }
-    async closeForce() { this.isConnected = false; return this.webSocket!.closeForce(); }
+    async close(code = 1000, reason?: string): Promise<void> { return this.webSocket!.close(code, reason!); }
+    async closeForce() { return this.webSocket!.closeForce(); }
     get isClosed(): boolean | undefined { return this.webSocket!.isClosed; }
 }
