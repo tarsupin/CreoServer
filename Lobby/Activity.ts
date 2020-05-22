@@ -1,3 +1,4 @@
+import Lobby from "./Lobby.ts";
 
 /*
 	The Activity Tracker tracks recent activity in the lobby, such as PPM (Players Per Minute)
@@ -17,9 +18,28 @@ export default abstract class Activity {
     // Player Counters
 	static playersOnline: number = 0;			// All players connected to the server. Includes those in rooms.
 	static playersIdle: number = 0;				// Players that are not in a room. Includes playerQueued.
+	static playersIdlePaid: number = 0;			// Idle Paid players.
+	static playersIdleGuest: number = 0;		// Idle Guest players.
 	static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
-	
-	// Five Second Tick
+    
+    // Reset Player Counters (Runs every 5 seconds during player scan)
+    static resetPlayerCounts() {
+        
+        Activity.playersOnline = 0;
+        Activity.playersIdle = 0;
+        Activity.playersIdleGuest = 0;
+        Activity.playersIdlePaid = 0;
+        Activity.playersQueued = 0;
+        
+		// Run Simulations (For Debugging Only)
+		if(Lobby.simulate.active) {
+			Activity.playersIdle = Lobby.simulate.idle;
+			Activity.playersQueued = Lobby.simulate.queued;
+			Activity.playersOnline = Activity.playersIdle + Activity.playersQueued;
+		}
+    }
+    
+	// Activity Update (Runs every 5 seconds)
 	static activityTick() {
 		const last = Date.now() - Activity.timeStarted;
 		const minuteNum = Math.floor(last / 60000);     // Date.now() returns in ms, so 60000 = 60 seconds.

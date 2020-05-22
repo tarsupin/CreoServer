@@ -1,13 +1,12 @@
 import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
 import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
-import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
 import Timer from "../Engine/Timer.ts";
 import { GamePreference } from "../Engine/GameTypes.ts";
 import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";
-import LobbyFuncUsers from "./LobbyFuncUsers.ts";
+import PlayerTracker from "../Player/PlayerTracker.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -105,11 +104,18 @@ export default abstract class Lobby {
         
         Lobby.wss.on("connection", (ws: WebSocket) => {
             
-            // Create New Player
-            let pid = LobbyFuncUsers.addUser();
-            // TODO: Need to add session data to link the client and server, so it can remember the session.
+            // Make sure Player Slots are available:
+            if(Activity.playersOnline >= PlayerTracker.playersOfficialCap) { return; }
+            if(Activity.playersOnline >= PlayerTracker.playersAllowedOnServer) { return; }
             
-            ws.data.playerId = pid;
+            // Get New Player Slot
+            let player = PlayerTracker.getAvailablePlayer();
+            
+            PlayerHandler.resetToNewPlayer(player);
+            PlayerHandler.addWebSocket(player, ws);
+            
+            // Attach Player to WebSocket
+            ws.data.playerId = player.id;
             
             // When User Sends Binary Data
             ws.on("bytes", (bytes: Uint8Array) => {
@@ -138,15 +144,20 @@ export default abstract class Lobby {
             Activity.activityTick();
         }
         
-        // Run Player Loop (every 5 seconds; 3rd cycle)
+        // Run Player Loop (every 5 seconds; 2nd cycle)
         // Counts players, identifies eligible players, etc.
-        if(Lobby.tickCounter == 3) {
-            LobbyFuncPlayers.runPlayerLoop();
+        else if(Lobby.tickCounter == 2) {
+            PlayerTracker.runPlayerScan();
+        }
+        
+        // Add Players to Open Games (every 5 seconds, 3rd cycle)
+        else if(Lobby.tickCounter == 3) {
+            // RoomHandler.attemptRoomGenerate();
         }
 		
-        // Attempt Room Creation (every 5 seconds; 5th cycle)
+        // Attempt Room Creation (every 5 seconds; 8th cycle)
         // Will only create a room if all tests check.
-        if(Lobby.tickCounter == 5) {
+        else if(Lobby.tickCounter == 8) {
             RoomHandler.attemptRoomGenerate();
         }
         

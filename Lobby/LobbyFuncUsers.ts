@@ -1,6 +1,5 @@
 import Activity from "./Activity.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
-import LobbyFuncPlayers from "./LobbyFuncPlayers.ts";
 
 export default abstract class LobbyFuncUsers {
     
@@ -13,7 +12,7 @@ export default abstract class LobbyFuncUsers {
 		}
 		
 		// Final Cleanup
-		LobbyFuncPlayers.runPlayerLoop();
+		PlayerTracker.runPlayerScan();
 	}
 	
 	static addUser(): number {

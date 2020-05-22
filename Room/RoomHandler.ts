@@ -1,4 +1,3 @@
-import LobbyFuncPlayers from "../Lobby/LobbyFuncPlayers.ts";
 import { PlayerRank } from "../Engine/GameTypes.ts";
 import Activity from "../Lobby/Activity.ts";
 import RoomTracker from "./RoomTracker.ts";
@@ -49,7 +48,6 @@ export default abstract class RoomHandler {
 			1. If Idle Players >= 16, create game instantly.
 			2. If Idle Players >= 10, create game every 10s.
 			3. If Idle Players >= 5, create game every 15s.
-			4. Create game every 20s (or at least attempt to).
 	*/
 	static attemptRoomGenerate() {
 		const idle = Activity.playersIdle;
