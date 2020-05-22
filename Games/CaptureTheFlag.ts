@@ -1,7 +1,7 @@
 import GameClass from "../Engine/GameClass.ts";
 import { GameType, RespawnType } from "../Engine/GameTypes.ts";
 
-export default abstract class CaptureTheFlag extends GameClass {
+export default class CaptureTheFlag extends GameClass {
     
     constructor() {
         super();

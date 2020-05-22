@@ -32,7 +32,9 @@ export default class Player {
 		this.id = playerId;
         this.resetToEmptyPlayer();
     }
-    
+	
+	get isAvailable() { return this.roomId == 0; }
+	
     // Idle Detection
 	get isIdle() { return this.roomId == 0; }
 	get isIdleGuest() { return this.roomId == 0 && this.rank < PlayerRank.PaidUser; }

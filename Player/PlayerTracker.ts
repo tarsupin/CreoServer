@@ -14,10 +14,6 @@ export default abstract class PlayerTracker {
     
     static playerList: Array<Player> = new Array(PlayerTracker.playersAllowedOnServer + 1);
     
-    // Indexes
-    static idlePaid: Array<Player> = new Array<Player>(16);         // Updates every 5 seconds (Player Scan)
-    static idleGuests: Array<Player> = new Array<Player>(16);       // Updates every 5 seconds (Player Scan)
-    
 	static getAvailablePlayer(): Player {
         
         // Loop from `playerScanId` to `playersAllowedOnServer`.
@@ -60,9 +56,6 @@ export default abstract class PlayerTracker {
 		Lobby.resetGroups();
 		Lobby.resetPrefs();
         
-        let idleVIPCount = 0;
-        let idleGuestCount = 0;
-        
         let curTimestamp = Date.now(); // Player with earliest waiting timestamp.
         
         // Loop through the full list of players, even inactive and disabled ones.
@@ -86,24 +79,17 @@ export default abstract class PlayerTracker {
             if(player.isIdle) {
                 Activity.playersIdle++;
                 
+				// Update League Idle Count
+				Activity.leaguesIdle[player.league]++;
+				
                 // Idle Paid
                 if(player.isIdlePaid) {
                     Activity.playersIdlePaid++;
-                    
-                    if(idleVIPCount < 16) {
-                        PlayerTracker.idlePaid[idleVIPCount] = player;
-                        idleVIPCount++;
-                    }
                 }
                 
                 // Idle Guests
                 if(player.isIdleGuest) {
                     Activity.playersIdleGuest++;
-                    
-                    if(idleGuestCount < 16) {
-                        PlayerTracker.idleGuests[idleGuestCount] = player;
-                        idleGuestCount++;
-                    }
                 }
                 
 			    // Update Queued Players

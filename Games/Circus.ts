@@ -6,7 +6,7 @@ import { GameType, RespawnType } from "../Engine/GameTypes.ts";
     Coins will slowly reappear in the level after collection, so stay alert.
 */
 
-export default abstract class Circus extends GameClass {
+export default class Circus extends GameClass {
     
     constructor() {
         super();

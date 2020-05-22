@@ -1,6 +1,8 @@
 import Player from "../Player/Player.ts";
 import GameClass from "../Engine/GameClass.ts";
 import { League } from "../Engine/GameTypes.ts";
+import Timer from "../Engine/Timer.ts";
+import RoomHandler from "./RoomHandler.ts";
 
 /*
 	Players join into Rooms to play a Game.
@@ -20,7 +22,7 @@ export default class Room {
     isEnabled: boolean = false;         // TRUE if room is enabled. FALSE if disabled (can be overwritten).
     
     // Players in the Room
-	players: Array<Player> = new Array<Player>(16);
+	players?: Array<Player>;
 	
     // Play Data
     levelId!: string;                   // The level ID (game map) that everyone must download to play in this room.
@@ -41,7 +43,10 @@ export default class Room {
 	}
     
     resetRoom() {
-        this.disableRoom();
+		
+		this.disableRoom();
+		
+    	// Play Data
         this.levelId = "";
         this.startFrame = 0;
         this.startTime = 0;
@@ -49,7 +54,22 @@ export default class Room {
         this.gameClass = undefined;
         this.leagueMin = League.Training;
         this.leagueMax = League.Grandmaster;
-    }
+	}
+	
+	prepareRoom(gameClass: GameClass, levelId: string) {
+		
+		this.disableRoom();
+		this.isEnabled = true;
+		
+    	// Play Data
+        this.levelId = levelId;
+        this.startFrame = Timer.frame;
+        this.startTime = Date.now();
+        this.playFrame = Timer.frame + 180;
+        this.gameClass = gameClass;
+        this.leagueMin = RoomHandler.leagueMin;
+        this.leagueMax = RoomHandler.leagueMax;
+	}
     
     disableRoom() {
         if(!this.isEnabled) { return; }
@@ -61,10 +81,15 @@ export default class Room {
     }
     
     purgeAllPlayersFromRoom() {
-        
+		
+		// Make sure the players list is valid.
+		if(!this.players || this.players.length == 0) {
+			return;
+		}
+		
         // Loop through each player in the room and disconnect them.
         this.players.forEach((player:Player, index: number) => {
             player.disconnectFromRoom();
-        });
+		});
     }
 }

@@ -124,7 +124,7 @@ export default abstract class LobbyFuncRoomServers {
         roomServer.conn = await new WebSocket(roomServer.name, 'ws://' + config.server.local + ':' + roomServer.port);
         
         // Build Commands for the Room Server, if it's online:
-        if(roomServer.conn.isConnected == true) {
+        if(roomServer.conn.isClosed == false) {
             
             roomServer.conn.send("Test This to port" + roomServer.port);
             LobbyFuncRoomServers.buildRoomServerCommands(roomServerId);

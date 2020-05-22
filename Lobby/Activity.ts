@@ -1,4 +1,5 @@
 import Lobby from "./Lobby.ts";
+import { League } from "../Engine/GameTypes.ts";
 
 /*
 	The Activity Tracker tracks recent activity in the lobby, such as PPM (Players Per Minute)
@@ -20,17 +21,40 @@ export default abstract class Activity {
 	static playersIdle: number = 0;				// Players that are not in a room. Includes playerQueued.
 	static playersIdlePaid: number = 0;			// Idle Paid players.
 	static playersIdleGuest: number = 0;		// Idle Guest players.
-    static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
-    
+	static playersQueued: number = 0;			// Queued Players are waiting for Group or Rival assignments, if any are present.
+	
+	// Listing of League Ranks Idle
+	static leaguesIdle: {
+		[League.Unrated]: number,
+		[League.Training]: number,
+		[League.Bronze]: number,
+		[League.Silver]: number,
+		[League.Gold]: number,
+		[League.Platinum]: number,
+		[League.Diamond]: number,
+		[League.Master]: number,
+		[League.Grandmaster]: number,
+		[index: number]: any,
+	};
+	
     // Reset Player Counters (Runs every 5 seconds during player scan)
     static resetPlayerCounts() {
-        
-        Activity.playersOnline = 0;
-        Activity.playersIdle = 0;
-        Activity.playersIdleGuest = 0;
-        Activity.playersIdlePaid = 0;
-        Activity.playersQueued = 0;
-        
+
+		Activity.playersOnline = 0;
+		Activity.playersIdle = 0;
+		Activity.playersIdleGuest = 0;
+		Activity.playersIdlePaid = 0;
+		Activity.playersQueued = 0;
+
+		Activity.leaguesIdle[League.Training] = 0;
+		Activity.leaguesIdle[League.Bronze] = 0;
+		Activity.leaguesIdle[League.Silver] = 0;
+		Activity.leaguesIdle[League.Gold] = 0;
+		Activity.leaguesIdle[League.Platinum] = 0;
+		Activity.leaguesIdle[League.Diamond] = 0;
+		Activity.leaguesIdle[League.Master] = 0;
+		Activity.leaguesIdle[League.Grandmaster] = 0;
+
 		// Run Simulations (For Debugging Only)
 		if(Lobby.simulate.active) {
 			Activity.playersIdleGuest = Lobby.simulate.guests;

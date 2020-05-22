@@ -2,7 +2,7 @@ import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
 import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
 import Timer from "../Engine/Timer.ts";
-import { GamePreference } from "../Engine/GameTypes.ts";
+import { GamePreference, League } from "../Engine/GameTypes.ts";
 import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";
@@ -43,6 +43,10 @@ export default abstract class Lobby {
 	
 	static tickCounter: number = 0;			// Track the number of ticks with modulus of 120.
 	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
+	
+	// Lobby Nature
+	static leagueMin: League = League.Unrated;		// The minimum league allowance in this lobby.
+	static leagueMax: League = League.Grandmaster;	// The maximum league allowance in this lobby.
 	
     // Groups
 	static groups: { [gid: string]: GroupData } = {}	// Groups; tracks how many group players are active, idle, etc.
@@ -105,8 +109,6 @@ export default abstract class Lobby {
                 PlayerTracker.runPlayerScan();
                 VerboseLog.log("online: " + Activity.playersOnline);
                 VerboseLog.log("idle: " + Activity.playersIdle);
-                VerboseLog.log("idle guests: " + Activity.playersIdleGuest);
-                VerboseLog.log("idle paid: " + Activity.playersIdlePaid);
             }
             
             // Add Players to Open Games (every 5 seconds, 3rd cycle)
