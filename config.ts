@@ -9,10 +9,12 @@ export const config = {
 	local: true,
 	environment: "local",
 	debug: {
-		active: true,
+        active: true,
+        verbose: true,        // Provide extra logging details.
 		simulate: {
 			ppm: 30,
-			idle: 4,
+            guests: 7,
+            paid: 3,
 			queued: 2,
 		}
 	},

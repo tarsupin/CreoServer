@@ -10,6 +10,7 @@ export const config = {
 	environment: "prod",
 	debug: {
 		active: false,
+        verbose: false,        // Provide extra logging details.
 		simulate: {
 			ppm: 30,
 			idle: 4,

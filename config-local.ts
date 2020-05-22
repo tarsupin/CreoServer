@@ -10,6 +10,7 @@ export const config = {
 	environment: "local",
 	debug: {
 		active: true,
+        verbose: false,        // Provide extra logging details.
 		simulate: {
 			ppm: 30,
 			idle: 4,

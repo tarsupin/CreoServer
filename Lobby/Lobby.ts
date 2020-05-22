@@ -7,6 +7,7 @@ import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
+import VerboseLog from "../Engine/VerboseLog.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -57,7 +58,8 @@ export default abstract class Lobby {
 	// Simulatations (For Debugging Purposes)
 	static simulate: {
 		active: boolean;
-		idle: number,
+        guests: number,
+        paid: number,
 		queued: number,
 	}
 	
@@ -95,6 +97,10 @@ export default abstract class Lobby {
             // Run Activity Tracker (every 5 seconds; 1st cycle)
             if(Lobby.tickCounter == 1) {
                 Activity.activityTick();
+                VerboseLog.log("online: " + Activity.playersOnline);
+                VerboseLog.log("idle: " + Activity.playersIdle);
+                VerboseLog.log("idle guests: " + Activity.playersIdleGuest);
+                VerboseLog.log("idle paid: " + Activity.playersIdlePaid);
             }
             
             // Run Player Loop (every 5 seconds; 2nd cycle)
@@ -105,7 +111,7 @@ export default abstract class Lobby {
             
             // Add Players to Open Games (every 5 seconds, 3rd cycle)
             else if(Lobby.tickCounter == 3) {
-                // RoomHandler.attemptRoomGenerate();
+                RoomHandler.attemptRoomGenerate();
             }
             
             // Attempt Room Creation (every 5 seconds; 8th cycle)
@@ -182,14 +188,16 @@ export default abstract class Lobby {
         
 		Lobby.simulate = {
 			active: false,
-			idle: 0,
+            guests: 0,
+            paid: 0,
 			queued: 0,
         }
         
         const sim = config.debug ? config.debug.simulate : null;
         if(sim != null && config.environment === 'local' && config.debug.active) {
             Lobby.simulate.active = true;
-            Lobby.simulate.idle = sim.idle;
+            Lobby.simulate.guests = sim.guests;
+            Lobby.simulate.paid = sim.paid;
             Lobby.simulate.queued = sim.queued;
         }
 	}

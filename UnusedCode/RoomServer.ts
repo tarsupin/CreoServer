@@ -1,5 +1,5 @@
-import Timer from "../WebServer/Timer.ts";
-import { WebSocketServer } from "../WebServer/WebSocket.ts";
+import { WebSocketServer } from "../Engine/WebSocket.ts";
+import Timer from "../Engine/Timer.ts";
 
 export default class RoomServer {
     wss: any;
@@ -11,12 +11,12 @@ export default class RoomServer {
         this.buildServer();
         
         // Run Server Loop
-        Timer.reset();
+        // Timer.reset();
 		setInterval(() => this.serverLoop(), 4);
 	}
 	
 	private serverLoop() {
-		Timer.update();
+		// Timer.update();
         
 		// Benchmarking
 		// const rnd = Math.random();

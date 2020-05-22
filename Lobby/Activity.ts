@@ -33,8 +33,10 @@ export default abstract class Activity {
         
 		// Run Simulations (For Debugging Only)
 		if(Lobby.simulate.active) {
-			Activity.playersIdle = Lobby.simulate.idle;
+			Activity.playersIdleGuest = Lobby.simulate.guests;
+			Activity.playersIdlePaid = Lobby.simulate.paid;
 			Activity.playersQueued = Lobby.simulate.queued;
+			Activity.playersIdle = Activity.playersIdleGuest + Activity.playersIdlePaid;
 			Activity.playersOnline = Activity.playersIdle + Activity.playersQueued;
 		}
     }

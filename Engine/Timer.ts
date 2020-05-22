@@ -13,12 +13,12 @@
 
 export default abstract class Timer {
 	
-	static frameMs: number= 1000 / 60;			// The number of ms per frame.
+	static frameMs: number = 1000 / 60;			// The number of ms per frame.
 	
-	static start: number;				        // The Date.now() when this timer started.
-	static last: number;				        // The Date.now() of the last cycle.
-	static prevFrameTime: number;		        // The previous timestamp that a frame ticked.
-	static nextFrameTime: number;		        // The next timestamp that a frame ticks.
+	static start: number = Date.now();;				                // The Date.now() when this timer started.
+	static last: number = 0;				                        // The Date.now() of the last cycle.
+	static prevFrameTime: number = 0;;		                        // The previous timestamp that a frame ticked.
+	static nextFrameTime: number = Timer.start + Timer.frameMs;		// The next timestamp that a frame ticks.
 	
 	static delta: number = 0;				    // ms since the last cycle.
 	static frame: number = 0;				    // Tracks the current global frame.
@@ -49,13 +49,5 @@ export default abstract class Timer {
 			Timer.slowTick = false;
 			Timer.slowerTick = false;
 		}
-	}
-	
-	static reset() {
-		Timer.start = Date.now();
-		Timer.frame = 0;
-		Timer.frameTick = false;
-		Timer.prevFrameTime = 0;
-		Timer.nextFrameTime = Timer.start + Timer.frameMs;
 	}
 }
