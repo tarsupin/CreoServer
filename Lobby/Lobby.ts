@@ -136,7 +136,7 @@ export default abstract class Lobby {
             // Get New Player Slot
             let player = PlayerTracker.getAvailablePlayer();
             
-            PlayerHandler.resetToNewPlayer(player);
+            player.resetToNewPlayer();
             PlayerHandler.addWebSocket(player, ws);
             
             // Attach Player to WebSocket

@@ -19,8 +19,8 @@ export default class Room {
     roomId: number = 0;
     isEnabled: boolean = false;         // TRUE if room is enabled. FALSE if disabled (can be overwritten).
     
-    // Players
-	players: Array<Player>;             // The players in the room.
+    // Players in the Room
+	players: Array<Player> = new Array<Player>(16);
 	
     // Play Data
     levelId!: string;                   // The level ID (game map) that everyone must download to play in this room.
@@ -35,13 +35,36 @@ export default class Room {
     leagueMax: League = League.Grandmaster;     // Highest League Allowance
     
 	constructor( roomId: number ) {
-        
-        // Initialize Room Details
-        this.isEnabled = true;
         this.roomId = roomId;
-        
-        // TODO: Change number of players based on room rules.
-		this.players = new Array<Player>(8);
+        this.isEnabled = false;
+        this.resetRoom();
 	}
-	
+    
+    resetRoom() {
+        this.disableRoom();
+        this.levelId = "";
+        this.startFrame = 0;
+        this.startTime = 0;
+        this.playFrame = 0;
+        this.gameClass = undefined;
+        this.leagueMin = League.Training;
+        this.leagueMax = League.Grandmaster;
+    }
+    
+    disableRoom() {
+        if(!this.isEnabled) { return; }
+        
+        this.isEnabled = false;
+        
+        // Purge players in room:
+        this.purgeAllPlayersFromRoom();
+    }
+    
+    purgeAllPlayersFromRoom() {
+        
+        // Loop through each player in the room and disconnect them.
+        this.players.forEach((player:Player, index: number) => {
+            player.disconnectFromRoom();
+        });
+    }
 }

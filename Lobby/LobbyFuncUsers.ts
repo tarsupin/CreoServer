@@ -1,15 +1,16 @@
 import Activity from "./Activity.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
+import Player from "../Player/Player.ts";
 
 export default abstract class LobbyFuncUsers {
     
 	// Purge all players from this hub.
 	static disconnectAllUsers() {
 		
-		// Loop through all players online and disconnect them.
-		for( let pid in PlayerTracker.playerList ) {
-			PlayerTracker.playerList[pid].disconnect();
-		}
+        // Loop through all players online and disconnect them.
+        PlayerTracker.playerList.forEach((player: Player, index: number) => {
+            player.disconnectFromServer();
+        });
 		
 		// Final Cleanup
 		PlayerTracker.runPlayerScan();
@@ -30,13 +31,12 @@ export default abstract class LobbyFuncUsers {
     }
     
 	static dropUser( pid: number ): boolean {
-		
 		let player = PlayerTracker.playerList[pid];
 		
 		// Make sure the player is recognized in this hub.
 		if(!player.isEnabled) { return false; }
 		
-		player.disconnect();
+		player.disconnectFromServer();
 		Activity.playerDisconnected();
 		delete PlayerTracker.playerList[pid];
 		

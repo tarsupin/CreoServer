@@ -11,7 +11,7 @@ export default abstract class RoomHandler {
     
 	// Method contacts a server and instructs it to create a new room.
 	// When the room is created, it gives instructions to players to join.
-	static addRoom() {
+	addRoom() {
 		
 		// Identify a Room Server to play on:
 		
@@ -19,26 +19,6 @@ export default abstract class RoomHandler {
 		
 		// Instruct players to join room, and treat them as having done so.
 		
-    }
-    
-    static disableRoom( roomId: number ) {
-        
-        // Purge players in room:
-        RoomHandler.purgeAllPlayersFromRoom(roomId);
-        
-        // Set as Inactive (allows it to be used for a new system)
-        RoomTracker.roomList[roomId].isEnabled = false;
-    }
-    
-    static purgeAllPlayersFromRoom( roomId: number ) {
-        var room = RoomTracker.roomList[roomId];
-        
-    }
-    
-    static removePlayerFromRoom( roomId: number, playerId: number ) {
-        var room = RoomTracker.roomList[roomId];
-        var players = room.players;
-        
     }
     
 	/*

@@ -1,5 +1,4 @@
-import { GamePreference, PlayerRank, PlayerKarma } from "../Engine/GameTypes.ts";
-import PlayerHandler from "./PlayerHandler.ts";
+import { GamePreference, PlayerRank, PlayerKarma, League } from "../Engine/GameTypes.ts";
 import { WebSocket } from "../Engine/WebSocket.ts";
 
 export default class Player {
@@ -24,13 +23,14 @@ export default class Player {
 	
 	// Player Details
 	rank!: PlayerRank;			// The player's rank: Guest, Member, Paid, VIP, Admin, etc.
+	league!: League;		    // The player's rank: Guest, Member, Paid, VIP, Admin, etc.
 	pingAvg!: number;			// How fast (ms) the player's connection seems to be.
 	karma!: PlayerKarma;		// The level of karma the player has.
 	cheating!: number;			// 0 is not cheater; 1+ is level of cheating karma.
 	
 	constructor( playerId: number ) {
 		this.id = playerId;
-        PlayerHandler.resetToNewPlayer(this);
+        this.resetToNewPlayer();
     }
     
     // Idle Detection
@@ -42,8 +42,49 @@ export default class Player {
 	setGroup( group: string ) { this.group = group; }
 	setRival( rival: string ) { this.rival = rival; }
     
-	// DISCONNECT
-	disconnect() {
-		console.log("MUST DISCONNECT PLAYER");
+    resetToNewPlayer() {
+        
+        // Initialize Default Player Values
+        this.isEnabled = false;
+        this.socket = undefined;
+        
+        // Lobby
+		this.waitStartTime = Date.now();
+        
+        // Room Values
+        this.roomId = 0;
+        this.spectate = false;
+        
+        // Player Details
+        this.rank = PlayerRank.Guest;
+        this.league = League.Unrated;
+		this.pingAvg = 5;
+		this.karma = PlayerKarma.None;
+        this.cheating = 0;
+        
+        // Player Settings
+		this.gamePref = GamePreference.Undeclared;
+		this.faction = "";
+		this.group = "";
+        this.rival = "";
+    }
+    
+	disconnectFromRoom() {
+        this.roomId = 0;
+        this.waitStartTime = Date.now();
+        
+        // TODO: Send socket message that indicates they should switch to a playground lobby.
+	}
+    
+	disconnectFromServer() {
+        
+        // Close the Socket Connection
+        if(this.socket instanceof WebSocket) {
+            this.socket.close();
+        }
+        
+        if(!this.isEnabled) { return; }
+        
+        this.resetToNewPlayer();
 	}
 }
