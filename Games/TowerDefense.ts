@@ -38,6 +38,7 @@ export default class TowerDefense extends GameClass {
         
         // Timer Limits
         this.timeLimit = 150;
+		this.playDelay = 300;
         
         // Arena Games
         this.arena = true;

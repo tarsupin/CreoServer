@@ -28,7 +28,8 @@ export default abstract class GameClass {
     respawnType: RespawnType = RespawnType.Standard;    // The type of respawn behavior.
     
     // Timer Limits
-    timeLimit: number = 0;                      // If set, game expires at this duration.
+	timeLimit: number = 0;                      // If set, game expires at this duration.
+	playDelay: number = 300;					// The number of frames that the game will wait before starting.
     
     // Arena Games
     arena: boolean = false;                     // Arena matches are played on arena fields.

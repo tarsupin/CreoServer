@@ -119,6 +119,9 @@ export default abstract class RoomHandler {
 		// Instruct players to join room, and treat them as having done so.
 		RoomHandler.prepareRoomPlayers(room);
 		
+		// Load Room
+		room.initiateGame();
+		
 		console.log(room);
     }
 	

@@ -33,6 +33,7 @@ export default class LevelCoop extends GameClass {
         
         // Timer Limits
         this.timeLimit = 600;
+		this.playDelay = 300;
         
         // Arena Games
         this.arena = false;

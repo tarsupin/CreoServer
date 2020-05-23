@@ -33,6 +33,7 @@ export default class NinjaBall extends GameClass {
         
         // Timer Limits
         this.timeLimit = 300;
+		this.playDelay = 300;
         
         // Arena Games
         this.arena = true;

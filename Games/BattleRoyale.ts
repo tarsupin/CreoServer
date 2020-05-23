@@ -32,7 +32,8 @@ export default class BattleRoyale extends GameClass {
         this.respawnType = RespawnType.Spectator;
         
         // Timer Limits
-        this.timeLimit = 150;
+		this.timeLimit = 150;
+		this.playDelay = 300;
         
         // Arena Games
         this.arena = true;

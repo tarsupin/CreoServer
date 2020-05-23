@@ -28,7 +28,6 @@ export default class Room {
     levelId!: string;                   // The level ID (game map) that everyone must download to play in this room.
     startTime: number = 0;              // Date.now() of when the game begins.
     startFrame: number = 0;             // The frame that the room started on, base on the global timer.
-    playFrame: number = 0;              // The frame that players will begin playing on.
     
     gameClass?: GameClass;              // The GameClass associated with the room.
     
@@ -41,6 +40,26 @@ export default class Room {
         this.isEnabled = false;
         this.resetRoom();
 	}
+	
+	// Initiate the Room's Game
+	async initiateGame() {
+		
+		// Prepare Instructions for Players
+		let instructions = {
+			"levelId": this.levelId,
+			"playFrame": this.gameClass?.playDelay,
+			"players": [
+			]
+		};
+		
+		// Send Game Instructions to Players
+		this.players?.forEach((player: Player, index: number) => {
+			
+			// Prepa
+			
+			player.socket?.send("");
+		})
+	}
     
     resetRoom() {
 		
@@ -50,7 +69,6 @@ export default class Room {
         this.levelId = "";
         this.startFrame = 0;
         this.startTime = 0;
-        this.playFrame = 0;
         this.gameClass = undefined;
         this.leagueMin = League.Training;
         this.leagueMax = League.Grandmaster;
@@ -65,7 +83,6 @@ export default class Room {
         this.levelId = levelId;
         this.startFrame = Timer.frame;
         this.startTime = Date.now();
-        this.playFrame = Timer.frame + 180;
         this.gameClass = gameClass;
         this.leagueMin = RoomHandler.leagueMin;
         this.leagueMax = RoomHandler.leagueMax;
