@@ -1,5 +1,8 @@
 import { GamePreference, PlayerRank, PlayerKarma, League } from "../Engine/GameTypes.ts";
 import { WebSocket } from "../Engine/WebSocket.ts";
+import { IKey } from "../Engine/SocketFlags.ts";
+import RoomTracker from "../Room/RoomTracker.ts";
+import VerboseLog from "../Engine/VerboseLog.ts";
 
 export default class Player {
 	
@@ -12,8 +15,15 @@ export default class Player {
 	username!: string;				// The player's username.
 	
     // Game Data
-    roomId!: number;			 	// The Room that a user is assigned to.
-    
+	roomId!: number;			 	// The Room that a user is assigned to.
+	gameFrame: number = 0;
+	
+	// Input Tracking
+	keysPressed: Array<IKey> = new Array<IKey>(5);
+	keysReleased: Array<IKey> = new Array<IKey>(5);
+	kpIndex: number = 0;
+	krIndex: number = 0;
+	
     // Important Settings
 	gamePref!: GamePreference;		// Which type of games / rooms you want to play.
 	faction!: string;				// The faction of choice. Few options available; displays in game?
@@ -37,6 +47,7 @@ export default class Player {
     }
 	
 	get isAvailable() { return this.roomId == 0; }
+	get inGame() { return this.roomId != 0; }
 	
     // Idle Detection
 	get isIdle() { return this.roomId == 0; }
@@ -59,24 +70,26 @@ export default class Player {
         // Lobby
 		this.waitStartTime = Date.now();
         
-        // Room Values
-        this.roomId = 0;
-        this.spectate = false;
-        
+        // Room Data
+		this.roomId = 0;
+		this.gameFrame = 0;
+		this.resetKeyInputs();
+		
+        // Player Settings
+		this.gamePref = GamePreference.Undeclared;
+		this.faction = "";
+		this.group = "";
+        this.rival = "";
+		this.spectate = false;
+		
         // Player Details
         this.rank = PlayerRank.Guest;
         this.league = League.Unrated;
 		this.pingAvg = 5;
 		this.karma = PlayerKarma.None;
         this.cheating = 0;
-        
-        // Player Settings
-		this.gamePref = GamePreference.Undeclared;
-		this.faction = "";
-		this.group = "";
-        this.rival = "";
-    }
-    
+	}
+	
     assignNewPlayer( socket: WebSocket ) {
         
         this.resetToEmptyPlayer();
@@ -89,25 +102,72 @@ export default class Player {
         // Load Session Data
         // TODO: Load any specifics this player has stored in their session or details.
     }
-    
+	
+	pressedKey( key: number ) {
+		if(key <= 0 || key > IKey.Other || this.kpIndex >= 5) { return; }
+		this.keysPressed[this.kpIndex] = key;
+		this.kpIndex++;
+	}
+	
+	releasedKey( key: number ) {
+		if(key <= 0 || key > IKey.Other || this.krIndex >= 5) { return; }
+		this.keysReleased[this.krIndex] = key;
+		this.krIndex++;
+	}
+	
 	disconnectFromRoom() {
-        this.roomId = 0;
+		
+		VerboseLog.verbose("Player " + this.id + " is attempting to disconnect from Room " + this.roomId);
+		
+		// Leave Room
+		if(this.roomId != 0) {
+			let room = RoomTracker.roomList[this.roomId];
+			let pNum = room.getPlayerNumById(this.id);
+			
+			if(pNum > -1) {
+				room.removePlayerByNum(pNum);
+			}
+			
+			this.roomId = 0;
+			VerboseLog.verbose("Player " + this.id + " has successfully disconnected from Room " + this.roomId);
+		}
+		
         this.waitStartTime = Date.now();
         
         // TODO: Send socket message that indicates they should switch to a playground lobby.
 	}
     
 	disconnectFromServer() {
-        
+		
+		this.disconnectFromRoom();
+		
+		VerboseLog.verbose("Player " + this.id + " is attempting to disconnect from the Server.");
+		
         // Close the Socket Connection
         if(this.socket instanceof WebSocket) {
-            this.socket.playerId = 0;
-            if(!this.socket.isClosed) { this.socket.close(); }
-            this.socket = undefined;
+			this.socket.playerId = 0;
+			
+            if(!this.socket.isClosed) {
+				this.socket.close();
+				VerboseLog.verbose("Player " + this.id + " has closed a Socket connection to the Server.");
+			}
+			
+			this.socket = undefined;
+			
+			VerboseLog.verbose("Player " + this.id + "'s access to Socket has been removed.");
         }
         
         if(!this.isEnabled) { return; }
         
         this.resetToEmptyPlayer();
+	}
+	
+	resetKeyInputs() {
+		this.kpIndex = 0;
+		this.krIndex = 0;
+		for(let i = 0; i < 5; i++) {
+			this.keysPressed[i] = 0;
+			this.keysReleased[i] = 0;
+		}
 	}
 }

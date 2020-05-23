@@ -42,6 +42,7 @@ export default abstract class PlayerTracker {
 	}
 	
 	static getPlayer( playerId: number ): Player {
+		if(playerId > PlayerTracker.playersAllowedOnServer) { return PlayerTracker.playerList[0]; }
         return PlayerTracker.playerList[playerId];
     }
     

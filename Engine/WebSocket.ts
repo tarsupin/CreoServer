@@ -102,6 +102,12 @@ export class WebSocket extends EventEmitter {
                     this.emit("message", ev);
                 }
                 
+                // Close
+                else if (isWebSocketCloseEvent(ev)) {
+                    const { code, reason } = ev;
+                    this.emit("close", code);
+                }
+                
                 // Ping
                 else if (isWebSocketPingEvent(ev)) {
                     const [, body] = ev;
@@ -113,12 +119,6 @@ export class WebSocket extends EventEmitter {
                     const [, body] = ev;
                     this.emit("pong", body);
                 }
-                
-                // Close
-                else if (isWebSocketCloseEvent(ev)) {
-                    const { code, reason } = ev;
-                    this.emit("close", code);
-                }
             }
             
         } catch (err) {
@@ -129,8 +129,16 @@ export class WebSocket extends EventEmitter {
         }
     }
     
+	async send(message: string | Uint8Array) {
+		
+		// If the socket is closed, don't send anything.
+		// This may run a few times in rapid succession if a socket is lost mid-game, but it will self-correct within a few seconds.
+		if(this.isClosed) { return; }
+		
+		return this.webSocket!.send(message);
+	}
+	
     async ping(message?: string | Uint8Array) { return this.webSocket!.ping(message); }
-    async send(message: string | Uint8Array) { return this.webSocket!.send(message); }
     async close(code = 1000, reason?: string): Promise<void> { return this.webSocket!.close(code, reason!); }
     async closeForce() { return this.webSocket!.closeForce(); }
     get isClosed(): boolean | undefined { return this.webSocket!.isClosed; }

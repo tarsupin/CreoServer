@@ -1,0 +1,3 @@
+
+Server broadcasts all known inputs immediately when RoomLoop is run.
+Server saves input into Room data, releases it at first opportunity.

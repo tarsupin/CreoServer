@@ -1,5 +1,4 @@
 import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
-import LobbyFuncCommands from "./LobbyFuncCommands.ts";
 import { config } from "../config.ts";
 import Timer from "../Engine/Timer.ts";
 import { GamePreference, League } from "../Engine/GameTypes.ts";
@@ -8,6 +7,9 @@ import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
 import VerboseLog from "../Engine/VerboseLog.ts";
+import RoomTracker from "../Room/RoomTracker.ts";
+import Room from "../Room/Room.ts";
+import ReceiveBroadcast from "./ReceiveBroadcast.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -85,16 +87,27 @@ export default abstract class Lobby {
         Lobby.wss = new WebSocketServer(Lobby.serverPort);
         
         // Prepare Arena Lobby & Rooms
-        RoomHandler.buildRoomPlaceholders();
         PlayerHandler.buildPlayerPlaceholders();
+		RoomHandler.buildRoomPlaceholders();
 		Lobby.buildServer();
 		
+		console.log("Lobby Initialization Complete. Server Online.");
+		
 		// Run Server Loop
-        setInterval(() => Lobby.serverLoop(), 4);
+        setInterval(() => Lobby.serverLoop(), 2);
 	}
 	
 	static serverLoop() {
 		Timer.update();
+		
+		let currentFrame = Timer.frame;
+		
+		// Run Every Room Loop
+		RoomTracker.roomList.forEach((room: Room, index: number) => {
+			if(room.isEnabled) {
+				room.roomLoop(currentFrame);
+			}
+		});
 		
         // Runs every 30 frames (0.5 seconds)
 		if(Timer.slowTick) {
@@ -104,22 +117,16 @@ export default abstract class Lobby {
                 Activity.activityTick();
             }
             
-            // Run Player Loop (every 5 seconds; 2nd cycle)
+            // Run Player Loop (every 2.5 seconds; 2nd and 7th cycles)
             // Counts players, identifies eligible players, etc.
-            else if(Lobby.tickCounter == 2) {
+            else if(Lobby.tickCounter == 2 || Lobby.tickCounter == 7) {
                 PlayerTracker.runPlayerScan();
-                VerboseLog.log("online: " + Activity.playersOnline);
-                VerboseLog.log("idle: " + Activity.playersIdle);
+                VerboseLog.verbose("Players Online: " + Activity.playersOnline + ", Idle: " + Activity.playersIdle);
             }
             
-            // Add Players to Open Games (every 5 seconds, 3rd cycle)
-            else if(Lobby.tickCounter == 3) {
-                RoomHandler.attemptRoomGenerate();
-            }
-            
-            // Attempt Room Creation (every 5 seconds; 8th cycle)
+            // Add Players to Open Games (every 2.5 seconds, 3rd and 8th cycles)
             // Will only create a room if all tests check.
-            else if(Lobby.tickCounter == 8) {
+            else if(Lobby.tickCounter == 3 || Lobby.tickCounter == 8) {
                 RoomHandler.attemptRoomGenerate();
             }
             
@@ -154,12 +161,12 @@ export default abstract class Lobby {
             
             // When User Sends Binary Data
             ws.on("bytes", (bytes: Uint8Array) => {
-                LobbyFuncCommands.ReceiveByteCommand(ws, bytes)
+                ReceiveBroadcast.ReceiveByteCommand(ws, bytes)
             });
             
 			// When User Sends a Message
             ws.on("message", (message: string) => {
-                LobbyFuncCommands.ReceiveTextCommand(ws, message)
+                ReceiveBroadcast.ReceiveTextCommand(ws, message)
             });
             
             // Ping/Pong
@@ -168,7 +175,7 @@ export default abstract class Lobby {
             
 			// When User Disconnects
 			ws.on("close", () => {
-                VerboseLog.log("Player #" + player.id + " has disconnected from the lobby.");
+                VerboseLog.log("Player " + player.id + " has issued a `close` socket command.");
                 player.disconnectFromServer();
             });
         });
@@ -202,7 +209,7 @@ export default abstract class Lobby {
         }
         
         const sim = config.debug ? config.debug.simulate : null;
-        if(sim != null && config.environment === 'local' && config.debug.active) {
+        if(sim != null && config.environment === 'local' && config.debug.simulate.active) {
             Lobby.simulate.active = true;
             Lobby.simulate.guests = sim.guests;
             Lobby.simulate.paid = sim.paid;

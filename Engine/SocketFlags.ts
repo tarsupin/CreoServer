@@ -10,27 +10,32 @@ export const enum SocketFlags {
 	InputPressTwo = 11,				// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed]
 	InputPressThree = 12,			// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed, IKey Pressed]
 	InputPressFour = 13,			// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed]
+	InputPressFive = 14,			// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed]
 	
 	InputRelease = 15,				// Next Sequence: [PlayerId, IKey Released]
 	InputReleaseTwo = 16,			// Next Sequence: [PlayerId, IKey Released, IKey Released]
 	InputReleaseThree = 17,			// Next Sequence: [PlayerId, IKey Released, IKey Released, IKey Released]
 	InputReleaseFour = 18,			// Next Sequence: [PlayerId, IKey Released, IKey Released, IKey Released, IKey Released]
+	InputReleaseFive = 19,			// Next Sequence: [PlayerId, IKey Released, IKey Released, IKey Released, IKey Released, IKey Released]
 	
 	// Communication
-	ChatMessage = 20,				// Next Sequence: [...String Characters, <TerminationFlag>]
+	ChatMessage = 20,				// Next Sequence: [...Message Characters, <TerminationFlag>]
 	AdminMessage = 21,				// Next Sequence: [AdminMessageFlag, AdminMessageFlag ExtraVar]
 	Emote = 22,						// Next Sequence: [PlayerId, EmoteFlag]
 	
-	// Instructions to Player
-	LoadWorld = 25,					// Next Sequence: [...String Characters, <TerminationFlag>]
-	LoadLevel = 26,					// Next Sequence: [...String Characters, <TerminationFlag>]
+	// Room Flags
+	PlayerJoined = 30,				// Next Sequence: [PlayerRoomNum, PlayerServerID [0-256]XX, PlayerServerID XXX[0-99], ...Username Characters, <TerminationFlag>]
+	LoadWorld = 31,					// Next Sequence: [...WorldId Characters, <TerminationFlag>]
+	LoadLevel = 32,					// Next Sequence: [...LevelId Characters, <TerminationFlag>]
 	
 	// Game Flags
-	AssignToTeam = 30,				// Next Sequence: [PlayerId, TeamId]
-	VictoryFlagToPlayer = 31,		// Next Sequence: [PlayerId, VictoryFlag]
-	VictoryFlagToTeam = 32,			// Next Sequence: [TeamId, VictoryFlag]
-	TimerAddMult5 = 33,				// Next Sequence: [Timer Addition x 5]
-	TimerSubtractMult5 = 34,		// Next Sequence: [Timer Subtraction x 5]
+	TimerAddMult5 = 50,				// Next Sequence: [Timer Addition x 5]
+	TimerSubtractMult5 = 51,		// Next Sequence: [Timer Subtraction x 5]
+	VictoryFlagToTeam = 52,			// Next Sequence: [TeamId, VictoryFlag]
+	
+	// Player Flags
+	AssignToTeam = 60,				// Next Sequence: [PlayerId, TeamId]
+	VictoryFlagToPlayer = 61,		// Next Sequence: [PlayerId, VictoryFlag]
 	
 	// User Connections
 	UserDisconnected = 120,			// Next Sequence: [PlayerId]

@@ -170,7 +170,7 @@ export default abstract class RoomHandler {
 	
 	static attachPlayerToRoom(room: Room, player: Player) {
 		player.roomId = room.roomId;
-		room.players?.push(player);
+		room.players.push(player);
 	}
 	
 	// Determine Game Type
