@@ -5,15 +5,15 @@ export default abstract class VerboseLog {
     static isLogging: boolean = config.debug.logging;
     static isVerbose: boolean = config.debug.logging && config.debug.verbose;
     
-    static log(text: string) {
+    static log(logData: any) {
         if(VerboseLog.isLogging) {
-            console.log(text);
+            console.log(logData);
         }
     }
     
-    static verbose(text: string) {
+    static verbose(logData: any) {
         if(VerboseLog.isVerbose) {
-            console.log(text);
+            console.log(logData);
         }
     }
 }

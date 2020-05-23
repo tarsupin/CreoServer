@@ -3,8 +3,9 @@ import GameClass from "../Engine/GameClass.ts";
 import { League } from "../Engine/GameTypes.ts";
 import Timer from "../Engine/Timer.ts";
 import RoomHandler from "./RoomHandler.ts";
-import PlayerTracker from "../Player/PlayerTracker.ts";
 import VerboseLog from "../Engine/VerboseLog.ts";
+import BroadcastData from "../Engine/BroadcastData.ts";
+import { SocketFlags, EmoteFlag } from "../Engine/SocketFlags.ts";
 
 /*
 	Players join into Rooms to play a Game.
@@ -57,37 +58,55 @@ export default class Room {
 		// Game Frame
 		let gameFrame = frame - this.startFrame;
 		
-		// Broadcast all known frames:
-		let broadcast = new Uint8Array([5, 5, 5]);
+		// Prepare the Broadcast Data
+		BroadcastData.newBroadcast();
+		BroadcastData.addCurrentFrameFlag(gameFrame);
 		
-		// Loop through Players in Room
-		for(let i = 0; i < this.players.length; i++) {
-			let player = this.players[i];
-			
-			// If we're dealing with the default "empty" player #0, no need to continue.
-			if(!player || player.id == 0) { continue; }
-			
-			// Send Broadcast to each player
-			player.socket?.send(broadcast);
-			VerboseLog.verbose("Sent broadcast to " + player.id);
+		// Loop through Players in Room. Gather Input to add to Broadcast data.
+		for(let pNum = 0; pNum < this.players.length; pNum++) {
+			let player = this.players[pNum];
+			if(!player) { continue; }
+			BroadcastData.addPlayerInput( player, pNum );
 		}
 		
-		// Clear out Broadcast Flags for Next Frame
-		
+		// Send Broadcast
+		this.broadcastToPlayersInRoom();
 	}
 	
-	// Initiate the Room's Game
-	async initiateGame() {
+	// Loop through Players in Room. Send out Broadcast data to each.
+	broadcastToPlayersInRoom() {
+		for(let pNum = 0; pNum < this.players.length; pNum++) {
+			let player = this.players[pNum];
+			if(!player) { continue; }
+			
+			// Send Broadcast to each player
+			player.socket?.send(BroadcastData.data.slice(0, BroadcastData.index));
+			// VerboseLog.verbose("Sent broadcast to Player " + player.id);
+			
+			// See Broadcast Data
+			if(player.socket && player.socket.webSocket && !player.socket.isClosed) {
+				VerboseLog.verbose(BroadcastData.data);
+			}
+		}
+	}
+	
+	// Initiate the Room's Game. Send Broadcast to Players.
+	initiateGame() {
 		
 		// Prepare Instructions for Players
-		let instructions = {
-			"levelId": this.levelId,
-			"playFrame": this.gameClass?.playDelay,
-			"players": [
-			]
-		};
+		BroadcastData.newBroadcast();
 		
-		// Send Game Instructions to Players
+		// Add String Flag
+		BroadcastData.addStringFlag(SocketFlags.LoadLevel, this.levelId, true);
+		
+		// Add Players
+		for(let pNum = 0; pNum < this.players.length; pNum++) {
+			let player = this.players[pNum];
+			if(!player) { continue; }
+			
+			BroadcastData.addFlag( SocketFlags.PlayerJoined, pNum );
+			BroadcastData.addString(player.username, true);
+		}
 		
 	}
     

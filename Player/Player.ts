@@ -21,8 +21,8 @@ export default class Player {
 	// Input Tracking
 	keysPressed: Array<IKey> = new Array<IKey>(5);
 	keysReleased: Array<IKey> = new Array<IKey>(5);
-	kpIndex: number = 0;
-	krIndex: number = 0;
+	kpCount: number = 0;
+	krCount: number = 0;
 	
     // Important Settings
 	gamePref!: GamePreference;		// Which type of games / rooms you want to play.
@@ -104,15 +104,15 @@ export default class Player {
     }
 	
 	pressedKey( key: number ) {
-		if(key <= 0 || key > IKey.Other || this.kpIndex >= 5) { return; }
-		this.keysPressed[this.kpIndex] = key;
-		this.kpIndex++;
+		if(key <= 0 || key > IKey.Other || this.kpCount >= 5) { return; }
+		this.keysPressed[this.kpCount] = key;
+		this.kpCount++;
 	}
 	
 	releasedKey( key: number ) {
-		if(key <= 0 || key > IKey.Other || this.krIndex >= 5) { return; }
-		this.keysReleased[this.krIndex] = key;
-		this.krIndex++;
+		if(key <= 0 || key > IKey.Other || this.krCount >= 5) { return; }
+		this.keysReleased[this.krCount] = key;
+		this.krCount++;
 	}
 	
 	disconnectFromRoom() {
@@ -128,8 +128,8 @@ export default class Player {
 				room.removePlayerByNum(pNum);
 			}
 			
-			this.roomId = 0;
 			VerboseLog.verbose("Player " + this.id + " has successfully disconnected from Room " + this.roomId);
+			this.roomId = 0;
 		}
 		
         this.waitStartTime = Date.now();
@@ -163,8 +163,8 @@ export default class Player {
 	}
 	
 	resetKeyInputs() {
-		this.kpIndex = 0;
-		this.krIndex = 0;
+		this.kpCount = 0;
+		this.krCount = 0;
 		for(let i = 0; i < 5; i++) {
 			this.keysPressed[i] = 0;
 			this.keysReleased[i] = 0;

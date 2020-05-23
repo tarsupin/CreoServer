@@ -5,6 +5,9 @@ export const enum SocketFlags {
 	
 	TerminationFlag = 0,			// Ends an instruction, often one that involves string characters.
 	
+	// Basic Flags
+	CurrentFrame = 1,				// Next Sequence: [Frame byte[0], Frame byte[1], Frame byte[2], Frame byte[3]]
+	
 	// Input
 	InputPress = 10,				// Next Sequence: [PlayerId, IKey Pressed]
 	InputPressTwo = 11,				// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed]
@@ -24,7 +27,7 @@ export const enum SocketFlags {
 	Emote = 22,						// Next Sequence: [PlayerId, EmoteFlag]
 	
 	// Room Flags
-	PlayerJoined = 30,				// Next Sequence: [PlayerRoomNum, PlayerServerID [0-256]XX, PlayerServerID XXX[0-99], ...Username Characters, <TerminationFlag>]
+	PlayerJoined = 30,				// Next Sequence: [PlayerRoomNum, ...Username Characters, <TerminationFlag>]
 	LoadWorld = 31,					// Next Sequence: [...WorldId Characters, <TerminationFlag>]
 	LoadLevel = 32,					// Next Sequence: [...LevelId Characters, <TerminationFlag>]
 	
