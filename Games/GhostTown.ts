@@ -2,26 +2,32 @@ import GameClass from "../Engine/GameClass.ts";
 import { GameType, RespawnType } from "../Engine/GameTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
-export default class CaptureTheFlag extends GameClass {
+/*
+	The goal in Ghost Town is for your team to collect as many coins as possible before the opposing team does.
+	Battling and damaging others is allowed and encouraged, but doesn't score points.
+    Coins will slowly reappear in the level after collection, so stay alert.
+*/
+
+export default class GhostTown extends GameClass {
     
     constructor() {
         super();
         
         // Game Details
-        this.gameType = GameType.CTF;
-		this.gameClassFlag = GameClassFlag.CaptureTheFlag;
-        this.title = "Capture The Flag";
-        this.description = "Capture the enemy's flag while defending your own.";
+        this.gameType = GameType.TeamBattle;
+		this.gameClassFlag = GameClassFlag.GhostTown;
+        this.title = "Ghost Town";
+        this.description = "Collect gems while surviving team battle and environmental hazards.";
         
         // Players Allowed
         this.minPlayersAllowed = 4;
         this.maxPlayersAllowed = 16;
         
         // Game Behaviors
-        this.cooperative = false;
+        this.cooperative = true;
         this.competitive = true;
         this.battle = true;
-        this.survival = false;
+        this.survival = true;
         
         // Team Behaviors
         this.teams = 2;
@@ -34,15 +40,15 @@ export default class CaptureTheFlag extends GameClass {
         this.respawnType = RespawnType.Standard;
         
         // Timer Limits
-        this.timeLimit = 300;
+        this.timeLimit = 240;
 		this.playDelay = 300;
         
         // Arena Games
         this.arena = true;
         this.arenaAllowHorizontal = true;
-        this.arenaAllowVertical = false;
+        this.arenaAllowVertical = true;
         this.arenaAllowFields = true;
-        this.arenaAllowRect = false;
+        this.arenaAllowRect = true;
     }
     
 }

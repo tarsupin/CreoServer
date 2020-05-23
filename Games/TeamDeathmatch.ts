@@ -1,5 +1,6 @@
 import GameClass from "../Engine/GameClass.ts";
 import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class TeamDeathmatch extends GameClass {
     
@@ -8,6 +9,7 @@ export default class TeamDeathmatch extends GameClass {
         
         // Game Details
         this.gameType = GameType.TeamBattle;
+		this.gameClassFlag = GameClassFlag.TeamDeathmatch;
         this.title = "Team Deathmatch";
         this.description = "Score points for your team by defeating your enemies.";
         

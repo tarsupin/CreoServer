@@ -6,6 +6,7 @@ import RoomHandler from "./RoomHandler.ts";
 import VerboseLog from "../Engine/VerboseLog.ts";
 import BroadcastData from "../Engine/BroadcastData.ts";
 import { SocketFlags, EmoteFlag } from "../Engine/SocketFlags.ts";
+import Mapper from "../Engine/Mapper.ts";
 
 /*
 	Players join into Rooms to play a Game.
@@ -25,7 +26,8 @@ export default class Room {
     isEnabled: boolean = false;         // TRUE if room is enabled. FALSE if disabled (can be overwritten).
 	roomLoopFrame: number = 0;			// The frame ID of the room loop to process.
 	
-    // Players in the Room
+	// Players in the Room
+	playerCount: number = 0;
 	players: Array<Player | null> = new Array<Player | null>(16);
 	
     // Play Data
@@ -33,7 +35,7 @@ export default class Room {
     startTime: number = 0;              // Date.now() of when the game begins.
     startFrame: number = 0;             // The frame that the room started on, base on the global timer.
     
-    gameClass?: GameClass;              // The GameClass associated with the room.
+    gameClass!: GameClass;              // The GameClass associated with the room.
     
     // Miscellaneous
     leagueMin: League = League.Training;        // Minimum League Allowance
@@ -74,8 +76,8 @@ export default class Room {
 	}
 	
 	// Loop through Players in Room. Send out Broadcast data to each.
-	broadcastToPlayersInRoom() {
-		for(let pNum = 0; pNum < this.players.length; pNum++) {
+	private broadcastToPlayersInRoom() {
+		for(let pNum = 0; pNum < this.playerCount; pNum++) {
 			let player = this.players[pNum];
 			if(!player) { continue; }
 			
@@ -96,11 +98,14 @@ export default class Room {
 		// Prepare Instructions for Players
 		BroadcastData.newBroadcast();
 		
-		// Add String Flag
+		// Add Game Class
+		BroadcastData.addFlag(SocketFlags.GameClass, this.gameClass.gameClassFlag);
+		
+		// Add Level Flag
 		BroadcastData.addStringFlag(SocketFlags.LoadLevel, this.levelId, true);
 		
 		// Add Players
-		for(let pNum = 0; pNum < this.players.length; pNum++) {
+		for(let pNum = 0; pNum < this.playerCount; pNum++) {
 			let player = this.players[pNum];
 			if(!player) { continue; }
 			
@@ -108,23 +113,34 @@ export default class Room {
 			BroadcastData.addString(player.username, true);
 		}
 		
+		this.initiationBroadcast();
 	}
     
-    resetRoom() {
+	// Special Broadcast Sequence that only occurs during game initation.
+	private initiationBroadcast() {
 		
-		this.isEnabled = false;
-		this.resetPlayersInRoom();
+		// Add WhoAmI Flag, to tell the player who they are.
+		// This value will be edited for each player, indicating which 
+		BroadcastData.addFlag(SocketFlags.WhoAmI, 0);
+		let whoIndex = BroadcastData.index - 1;
 		
-    	// Play Data
-        this.levelId = "";
-        this.startFrame = 0;
-        this.startTime = 0;
-        this.gameClass = undefined;
-        this.leagueMin = League.Training;
-        this.leagueMax = League.Grandmaster;
+		for(let pNum = 0; pNum < this.playerCount; pNum++) {
+			let player = this.players[pNum];
+			if(!player) { continue; }
+			
+			// Update WhoAmI Number
+			BroadcastData.data[whoIndex] = pNum;
+			
+			// Send Broadcast to each player
+			player.socket?.send(BroadcastData.data.slice(0, BroadcastData.index));
+		}
 	}
 	
-	prepareRoom(gameClass: GameClass, levelId: string) {
+	prepareRoom(gameClass: GameClass, levelId: string, playerCount: number) {
+		
+		// Reset Players
+		this.resetPlayersInRoom();
+		this.playerCount = playerCount;
 		
     	// Play Data
         this.levelId = levelId;
@@ -134,13 +150,26 @@ export default class Room {
         this.leagueMin = RoomHandler.leagueMin;
 		this.leagueMax = RoomHandler.leagueMax;
 		
-		this.resetPlayersInRoom();
-		
 		// Enable Room
 		this.isEnabled = true;
 	}
     
-    resetPlayersInRoom() {
+    private resetRoom() {
+		
+		this.isEnabled = false;
+		this.resetPlayersInRoom();
+		
+    	// Play Data
+        this.levelId = "";
+        this.startFrame = 0;
+        this.startTime = 0;
+        this.gameClass = Mapper.GameClasses.LevelCoop;
+        this.leagueMin = League.Training;
+        this.leagueMax = League.Grandmaster;
+	}
+	
+    private resetPlayersInRoom() {
+		this.playerCount = 0;
 		
 		// Loop through each player in the room and disconnect them.
 		for(let i = 0; i < 16; i++) {
@@ -163,10 +192,10 @@ export default class Room {
 	getPlayerNumById( playerId: number ) {
 		
 		// Loop through each player in the room and disconnect them.
-		for(let i = 0; i < 16; i++) {
-			let player = this.players[i];
+		for(let pNum = 0; pNum < this.playerCount; pNum++) {
+			let player = this.players[pNum];
 			if(!player || player.id != playerId) { continue; }
-			return i;
+			return pNum;
 		}
 		
 		return -1;

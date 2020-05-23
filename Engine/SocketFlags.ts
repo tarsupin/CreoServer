@@ -7,44 +7,50 @@ export const enum SocketFlags {
 	
 	// Basic Flags
 	CurrentFrame = 1,				// Next Sequence: [Frame byte[0], Frame byte[1], Frame byte[2], Frame byte[3]]
+	WhoAmI = 2,						// Next Sequence: [PlayerNum]
 	
 	// Input
-	InputPress = 10,				// Next Sequence: [PlayerId, IKey Pressed]
-	InputPressTwo = 11,				// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed]
-	InputPressThree = 12,			// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed, IKey Pressed]
-	InputPressFour = 13,			// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed]
-	InputPressFive = 14,			// Next Sequence: [PlayerId, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed]
+	InputPress = 10,				// Next Sequence: [PlayerNum, IKey Pressed]
+	InputPressTwo = 11,				// Next Sequence: [PlayerNum, IKey Pressed, IKey Pressed]
+	InputPressThree = 12,			// Next Sequence: [PlayerNum, IKey Pressed, IKey Pressed, IKey Pressed]
+	InputPressFour = 13,			// Next Sequence: [PlayerNum, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed]
+	InputPressFive = 14,			// Next Sequence: [PlayerNum, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed, IKey Pressed]
 	
-	InputRelease = 15,				// Next Sequence: [PlayerId, IKey Released]
-	InputReleaseTwo = 16,			// Next Sequence: [PlayerId, IKey Released, IKey Released]
-	InputReleaseThree = 17,			// Next Sequence: [PlayerId, IKey Released, IKey Released, IKey Released]
-	InputReleaseFour = 18,			// Next Sequence: [PlayerId, IKey Released, IKey Released, IKey Released, IKey Released]
-	InputReleaseFive = 19,			// Next Sequence: [PlayerId, IKey Released, IKey Released, IKey Released, IKey Released, IKey Released]
+	InputRelease = 15,				// Next Sequence: [PlayerNum, IKey Released]
+	InputReleaseTwo = 16,			// Next Sequence: [PlayerNum, IKey Released, IKey Released]
+	InputReleaseThree = 17,			// Next Sequence: [PlayerNum, IKey Released, IKey Released, IKey Released]
+	InputReleaseFour = 18,			// Next Sequence: [PlayerNum, IKey Released, IKey Released, IKey Released, IKey Released]
+	InputReleaseFive = 19,			// Next Sequence: [PlayerNum, IKey Released, IKey Released, IKey Released, IKey Released, IKey Released]
+	
+	// Essential Game + Room Flags
+	GameClass = 20,					// Next Sequence: [GameClassFlag]
+	LoadLevel = 21,					// Next Sequence: [...LevelId Characters, <TerminationFlag>]
+	TimerAddMult10 = 22,			// Next Sequence: [Timer Addition x 10s]
+	TimerSubtractMult10 = 23,		// Next Sequence: [Timer Subtraction x 10s]
+	VictoryFlagToTeam = 24,			// Next Sequence: [TeamId, VictoryFlag]
+	VictoryFlagToPlayer = 25,		// Next Sequence: [PlayerNum, VictoryFlag]
+	
+	// Player Assignment Flags
+	PlayerJoined = 30,				// Next Sequence: [PlayerNum, ...Username Characters, <TerminationFlag>]
+	PlayerIs = 31,					// Next Sequence: [PlayerNum, PlayerIsFlag]
+	PlayerTeam = 32,				// Next Sequence: [PlayerNum, TeamId]
+	PlayerGameRole = 33,			// Next Sequence: [PlayerNum, Player Game Role]
 	
 	// Communication
-	ChatMessage = 20,				// Next Sequence: [...Message Characters, <TerminationFlag>]
-	AdminMessage = 21,				// Next Sequence: [AdminMessageFlag, AdminMessageFlag ExtraVar]
-	Emote = 22,						// Next Sequence: [PlayerId, EmoteFlag]
+	ChatMessage = 80,				// Next Sequence: [...Message Characters, <TerminationFlag>]
+	AdminMessage = 81,				// Next Sequence: [AdminMessageFlag, AdminMessageFlag ExtraVar]
+	Emote = 82,						// Next Sequence: [PlayerNum, EmoteFlag]
 	
-	// Room Flags
-	PlayerJoined = 30,				// Next Sequence: [PlayerRoomNum, ...Username Characters, <TerminationFlag>]
-	LoadWorld = 31,					// Next Sequence: [...WorldId Characters, <TerminationFlag>]
-	LoadLevel = 32,					// Next Sequence: [...LevelId Characters, <TerminationFlag>]
+	// User Sockets
+	UserConnected = 90,				// Next Sequence: [PlayerNum]
+	UserDisconnected = 91,			// Next Sequence: [PlayerNum]
 	
-	// Game Flags
-	TimerAddMult5 = 50,				// Next Sequence: [Timer Addition x 5]
-	TimerSubtractMult5 = 51,		// Next Sequence: [Timer Subtraction x 5]
-	VictoryFlagToTeam = 52,			// Next Sequence: [TeamId, VictoryFlag]
-	
-	// Player Flags
-	AssignToTeam = 60,				// Next Sequence: [PlayerId, TeamId]
-	VictoryFlagToPlayer = 61,		// Next Sequence: [PlayerId, VictoryFlag]
-	
-	// User Connections
-	UserDisconnected = 120,			// Next Sequence: [PlayerId]
+	// GAME FLAGS
+	// RESERVED. DO NOT USE FLAGS 100 to 200.
+	// If a flag of 100 to 200 is used, it means there are special flags for the game class being played.
 	
 	// Admin Instructions
-	DropUser = 200,					// Next Sequence: [PlayerId]
+	DropUser = 210,					// Next Sequence: [PlayerNum]
 }
 
 // IKey - Input Keys
@@ -72,6 +78,42 @@ export const enum VictoryFlag {
 	Loss = 0,
 	Victory = 1,
 	Tie = 2,
+}
+
+export const enum PlayerIsFlag {
+	Player = 0,
+	Spectator = 1,
+}
+
+export const enum GameClassFlag {
+	
+	// Cooperative Traditional (Single Team)
+	LevelCoop = 1,
+	Safari = 2,
+	
+	// Friendly Traditional (No PVP)
+	LevelRace = 11,
+	
+	// Competitive Traditional
+	LevelVersus = 20,
+	
+	// Cooperative Arena (Single Team)
+	TowerDefense = 31,
+	
+	// Friendly Arena (No PVP)
+	TreasureHunt = 40,
+	
+	// Team Arena
+	TeamDeathmatch = 50,
+	GhostTown = 51,
+	CaptureTheFlag = 52,
+	NinjaBall = 53,
+	
+	// Competitive Arena
+	Deathmatch = 60,
+	DarkCircus = 61,
+	BossBattle = 62,
+	BattleRoyale = 63,
 }
 
 // Admin Message Flags have a follow-up sequence:

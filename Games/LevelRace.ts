@@ -2,46 +2,50 @@ import GameClass from "../Engine/GameClass.ts";
 import { GameType, RespawnType } from "../Engine/GameTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
-export default class CaptureTheFlag extends GameClass {
+/*
+	Standard Level, but everyone is racing to complete it first.
+*/
+
+export default class LevelRace extends GameClass {
     
     constructor() {
         super();
         
         // Game Details
-        this.gameType = GameType.CTF;
-		this.gameClassFlag = GameClassFlag.CaptureTheFlag;
-        this.title = "Capture The Flag";
-        this.description = "Capture the enemy's flag while defending your own.";
+        this.gameType = GameType.Trial;
+		this.gameClassFlag = GameClassFlag.LevelRace;
+        this.title = "Race";
+        this.description = "Race through a level. You have competitors, but they can't hurt you.";
         
         // Players Allowed
-        this.minPlayersAllowed = 4;
-        this.maxPlayersAllowed = 16;
+        this.minPlayersAllowed = 2;
+        this.maxPlayersAllowed = 4;
         
         // Game Behaviors
         this.cooperative = false;
         this.competitive = true;
-        this.battle = true;
+        this.battle = false;
         this.survival = false;
         
         // Team Behaviors
-        this.teams = 2;
+        this.teams = 0;
         
         // Respawns
         this.respawn = true;
-        this.respawnFrames = 600;
-        this.respawnInvincible = 60;
+        this.respawnFrames = 0;
+        this.respawnInvincible = 90;
         this.respawnUntouchable = true;
         this.respawnType = RespawnType.Standard;
         
         // Timer Limits
-        this.timeLimit = 300;
+        this.timeLimit = 600;
 		this.playDelay = 300;
         
         // Arena Games
-        this.arena = true;
-        this.arenaAllowHorizontal = true;
+        this.arena = false;
+        this.arenaAllowHorizontal = false;
         this.arenaAllowVertical = false;
-        this.arenaAllowFields = true;
+        this.arenaAllowFields = false;
         this.arenaAllowRect = false;
     }
     

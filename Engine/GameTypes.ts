@@ -27,6 +27,7 @@ export const enum GameType {
 	Coop = 1,				// Players cooperate to finish. Traditional gameplay.
 	Roles = 2,				// Players cooperate, but have different roles, abilities, etc.
 	Survival = 3,			// Players cooperate to survive. Swarms or waves come.
+	Trial = 4,				// Players compete, but not by attacking each other.
 	
 	Versus = 10,			// Players compete to finish. Traditional gameplay.
 	VersusRoles = 11,		// Players compete, but have different roles to play. May be asymmetric.

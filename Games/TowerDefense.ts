@@ -1,5 +1,6 @@
 import GameClass from "../Engine/GameClass.ts";
 import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
     The goal in Circus is to collect as many coins as possible before your opponents do.
@@ -13,6 +14,7 @@ export default class TowerDefense extends GameClass {
         
         // Game Details
         this.gameType = GameType.Survival;
+		this.gameClassFlag = GameClassFlag.TowerDefense;
         this.title = "Tower Defense";
         this.description = "Protect your tower against an onslaught of enemies.";
         
@@ -37,7 +39,7 @@ export default class TowerDefense extends GameClass {
         this.respawnType = RespawnType.Standard;
         
         // Timer Limits
-        this.timeLimit = 150;
+        this.timeLimit = 180;
 		this.playDelay = 300;
         
         // Arena Games

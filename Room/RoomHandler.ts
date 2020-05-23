@@ -114,7 +114,7 @@ export default abstract class RoomHandler {
 		if(room.roomId == 0) { return; }
 		
 		// Setup Room
-		room.prepareRoom(gameClass, levelId);
+		room.prepareRoom(gameClass, levelId, RoomHandler.roomSize);
 		
 		// Instruct players to join room, and treat them as having done so.
 		RoomHandler.prepareRoomPlayers(room);

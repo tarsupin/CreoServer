@@ -2,26 +2,31 @@ import GameClass from "../Engine/GameClass.ts";
 import { GameType, RespawnType } from "../Engine/GameTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
-export default class Deathmatch extends GameClass {
+/*
+	The goal in Safari is to collect all of the level's coins.
+	There are environmental hazards (standard level), so cooperate with your team to pass.
+*/
+
+export default class Safari extends GameClass {
     
     constructor() {
         super();
         
         // Game Details
-        this.gameType = GameType.Battle;
-		this.gameClassFlag = GameClassFlag.Deathmatch;
-        this.title = "Deathmatch";
-        this.description = "Score points by defeating your enemies.";
+        this.gameType = GameType.Trial;
+		this.gameClassFlag = GameClassFlag.Safari;
+        this.title = "Safari";
+        this.description = "Collect all of them gems while surviving against elemental hazards.";
         
         // Players Allowed
         this.minPlayersAllowed = 2;
-        this.maxPlayersAllowed = 16;
+        this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = true;
-        this.survival = false;
+        this.cooperative = true;
+        this.competitive = false;
+        this.battle = false;
+        this.survival = true;
         
         // Team Behaviors
         this.teams = 0;
@@ -34,7 +39,7 @@ export default class Deathmatch extends GameClass {
         this.respawnType = RespawnType.Standard;
         
         // Timer Limits
-        this.timeLimit = 300;
+        this.timeLimit = 150;
 		this.playDelay = 300;
         
         // Arena Games

@@ -1,9 +1,11 @@
 import { GameType, ArenaSize, RespawnType } from "./GameTypes.ts";
+import { GameClassFlag } from "./SocketFlags.ts";
 
 export default abstract class GameClass {
     
     // Game Details
-    gameType!: GameType;
+	gameType!: GameType;
+	gameClassFlag!: GameClassFlag;
     title!: string;
     description!: string;
     
