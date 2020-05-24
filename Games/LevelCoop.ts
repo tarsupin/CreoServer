@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
+import { ArenaType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class LevelCoop extends GameClass {

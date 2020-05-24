@@ -92,10 +92,3 @@ export const enum PlayerRank {
 	Admin = 8,
 	Superuser = 10,
 }
-
-export const enum RespawnType {
-    Standard = 0,           // The standard respawn; whichever location is appropriate for the game.
-    Ghost = 1,              // Respawn as a ghost. Cannot interact, but may be visible.
-    Spectator = 2,          // Respawn as a spectator. No interaction.
-    NoRespawn = 3,          // Don't respawn.
-}

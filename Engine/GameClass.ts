@@ -1,4 +1,4 @@
-import { ArenaType, ArenaSize, RespawnType } from "./ArenaTypes.ts";
+import { ArenaType } from "./ArenaTypes.ts";
 import { GameClassFlag } from "./SocketFlags.ts";
 
 export default class GameClass {
