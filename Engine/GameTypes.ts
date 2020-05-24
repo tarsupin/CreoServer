@@ -24,22 +24,19 @@ export const enum ArenaSize {
 }
 
 export const enum GameType {
-	Coop = 1,				// Players cooperate to finish. Traditional gameplay.
-	Roles = 2,				// Players cooperate, but have different roles, abilities, etc.
-	Survival = 3,			// Players cooperate to survive. Swarms or waves come.
+	CoopLevel = 1,			// Players cooperate to finish. Traditional gameplay.
+	Survival = 2,			// Players cooperate to survive. Swarms or waves come.
+	TeamSurvival = 3,		// Players cooperate to survive. Swarms or waves come.
 	Trial = 4,				// Players compete, but not by attacking each other.
 	
-	Versus = 10,			// Players compete to finish. Traditional gameplay.
-	VersusRoles = 11,		// Players compete, but have different roles to play. May be asymmetric.
-	Battle = 12,			// Players battle each other. Free for all.
-	BattleRoyale = 13,		// Players battle with a scene that slowly collapses to the center.
+	Battle = 10,			// Players battle each other. Free for all.
+	TeamBattle = 11,		// Players battle each other on teams. Work with allies, defeat enemies.
 	
-	TeamBattle = 20,		// Players battle each other on teams. Work with allies, defeat enemies.
-	BossBattle = 21,		// Boss Battle challenge. One team is a single boss player with major advantage.
-	CTF = 22,				// Two teams play capture the flag.
-	NinjaBall = 23,			// Two teams play soccer against each other. Score goals to win. Time limit.
+	Challenge = 20,			// 
+	TeamChallenge = 21,		// 
 	
-	Playtest = 50,			// Author of level spectates while players play. Earn Playtesting Credits.
+	SoloArena = 30,			// 
+	TeamArena = 31,			// 
 	
 	// TERRITORY			// World Map where you compete over territories. Persistent Game.
 	// GM Modes				// GM plays against players.

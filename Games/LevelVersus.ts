@@ -8,14 +8,14 @@ export default class LevelVersus extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Versus;
+        this.gameType = GameType.Challenge;
 		this.gameClassFlag = GameClassFlag.LevelVersus;
         this.title = "Versus Level";
         this.description = "Traditional level playthrough, but with competition and battling.";
         
         // Players Allowed
         this.minPlayersAllowed = 2;
-        this.maxPlayersAllowed = 8;
+        this.maxPlayersAllowed = 4;
         
         // Game Behaviors
         this.cooperative = false;

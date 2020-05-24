@@ -3,8 +3,7 @@ import { GameType, RespawnType } from "../Engine/GameTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
-    The goal in Circus is to collect as many coins as possible before your opponents do.
-    Coins will slowly reappear in the level after collection, so stay alert.
+    Defend a tower from enemies with your team.
 */
 
 export default class TowerDefense extends GameClass {
@@ -19,8 +18,8 @@ export default class TowerDefense extends GameClass {
         this.description = "Protect your tower against an onslaught of enemies.";
         
         // Players Allowed
-        this.minPlayersAllowed = 1;
-        this.maxPlayersAllowed = 16;
+        this.minPlayersAllowed = 4;
+        this.maxPlayersAllowed = 4;
         
         // Game Behaviors
         this.cooperative = true;

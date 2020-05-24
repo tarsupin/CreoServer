@@ -90,6 +90,8 @@ export const enum GameClassFlag {
 	// Cooperative Traditional (Single Team)
 	LevelCoop = 1,
 	Safari = 2,
+	Superheroes = 3,
+	NinjaAcademy = 4,
 	
 	// Friendly Traditional (No PVP)
 	LevelRace = 11,
@@ -99,6 +101,7 @@ export const enum GameClassFlag {
 	
 	// Cooperative Arena (Single Team)
 	TowerDefense = 31,
+	BossBattle = 32,
 	
 	// Friendly Arena (No PVP)
 	TreasureHunt = 40,
@@ -108,13 +111,20 @@ export const enum GameClassFlag {
 	GhostTown = 51,
 	CaptureTheFlag = 52,
 	NinjaBall = 53,
+	Dodgeball = 54,
+	Endbringers = 55,
 	
 	// Competitive Arena
 	Deathmatch = 60,
 	DarkCircus = 61,
-	BossBattle = 62,
-	BattleRoyale = 63,
+	BattleRoyale = 62,
 }
+
+	// - The Endbringer
+	// 	- Superheroes fight against a really powerful boss.
+	// 	- You each have a combo set: Suit + Hat + Att Power + Mob Power. Can use all of them.
+	// 	- Can still die, but always a superhero.
+	// - Dodgeball
 
 // Admin Message Flags have a follow-up sequence:
 export const enum AdminMessageFlag {

@@ -8,14 +8,14 @@ export default class NinjaBall extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.NinjaBall;
+        this.gameType = GameType.TeamArena;
 		this.gameClassFlag = GameClassFlag.NinjaBall;
         this.title = "Ninja Ball";
         this.description = "Kick the ball into the opponent's goal to score.";
         
         // Players Allowed
         this.minPlayersAllowed = 4;
-        this.maxPlayersAllowed = 16;
+        this.maxPlayersAllowed = 12;
         
         // Game Behaviors
         this.cooperative = false;

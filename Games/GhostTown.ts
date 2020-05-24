@@ -20,8 +20,8 @@ export default class GhostTown extends GameClass {
         this.description = "Collect gems while surviving team battle and environmental hazards.";
         
         // Players Allowed
-        this.minPlayersAllowed = 4;
-        this.maxPlayersAllowed = 16;
+        this.minPlayersAllowed = 6;
+        this.maxPlayersAllowed = 12;
         
         // Game Behaviors
         this.cooperative = true;

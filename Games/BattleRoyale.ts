@@ -8,7 +8,7 @@ export default class BattleRoyale extends GameClass {
         super();
         
         // Game Details
-		this.gameType = GameType.BattleRoyale;
+		this.gameType = GameType.Battle;
 		this.gameClassFlag = GameClassFlag.BattleRoyale;
         this.title = "Battle Royale";
         this.description = "Survive the longest. Defeat your enemies for supplies.";

@@ -3,44 +3,42 @@ import { GameType, RespawnType } from "../Engine/GameTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
-	The goal in Dark Circus is to collect as many coins as possible before your opponents do.
-	Battling and damaging others is allowed and encouraged, but doesn't score points.
-    Coins will slowly reappear in the level after collection, so stay alert.
+	Play as one of four superheroes (randomly selected) and play through a traditional level cooperatively.
 */
 
-export default class DarkCircus extends GameClass {
+export default class Superheroes extends GameClass {
     
     constructor() {
         super();
         
         // Game Details
-        this.gameType = GameType.Battle;
-		this.gameClassFlag = GameClassFlag.DarkCircus;
-        this.title = "Dark Circus";
-        this.description = "Collect the most gems while surviving battle to achieve victory.";
+        this.gameType = GameType.CoopLevel;
+		this.gameClassFlag = GameClassFlag.Superheroes;
+        this.title = "Superheroes";
+        this.description = "Traditional level, but everyone is a superhero.";
         
         // Players Allowed
-        this.minPlayersAllowed = 3;
+        this.minPlayersAllowed = 4;
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = true;
-        this.survival = false;
+        this.cooperative = true;
+        this.competitive = false;
+        this.battle = false;
+        this.survival = true;
         
         // Team Behaviors
         this.teams = 0;
         
         // Respawns
         this.respawn = true;
-        this.respawnFrames = 300;
+        this.respawnFrames = 600;
         this.respawnInvincible = 120;
         this.respawnUntouchable = true;
         this.respawnType = RespawnType.Standard;
         
         // Timer Limits
-        this.timeLimit = 180;
+        this.timeLimit = 300;
 		this.playDelay = 300;
         
         // Arena Games

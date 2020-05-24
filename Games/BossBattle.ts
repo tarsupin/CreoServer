@@ -8,23 +8,23 @@ export default class BossBattle extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.BossBattle;
+        this.gameType = GameType.TeamBattle;
 		this.gameClassFlag = GameClassFlag.BossBattle;
         this.title = "Boss Battle";
-        this.description = "A superior force faces off against multiple opponents.";
+        this.description = "Defeat a powerful boss with your team.";
         
         // Players Allowed
         this.minPlayersAllowed = 4;
-        this.maxPlayersAllowed = 4;
+        this.maxPlayersAllowed = 12;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = true;
+        this.cooperative = true;
+        this.competitive = false;
+        this.battle = false;
         this.survival = false;
         
         // Team Behaviors
-        this.teams = 2;
+        this.teams = 0;
         
         // Respawns
         this.respawn = true;
@@ -34,7 +34,7 @@ export default class BossBattle extends GameClass {
         this.respawnType = RespawnType.Standard;
         
         // Timer Limits
-        this.timeLimit = 150;
+        this.timeLimit = 300;
 		this.playDelay = 300;
         
         // Arena Games

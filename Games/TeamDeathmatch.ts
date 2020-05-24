@@ -14,7 +14,7 @@ export default class TeamDeathmatch extends GameClass {
         this.description = "Score points for your team by defeating your enemies.";
         
         // Players Allowed
-        this.minPlayersAllowed = 4;
+        this.minPlayersAllowed = 6;
         this.maxPlayersAllowed = 16;
         
         // Game Behaviors

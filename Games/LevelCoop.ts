@@ -8,14 +8,14 @@ export default class LevelCoop extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Coop;
+        this.gameType = GameType.CoopLevel;
 		this.gameClassFlag = GameClassFlag.LevelCoop;
         this.title = "Cooperative Level";
         this.description = "Traditional level playthrough, with cooperative partners.";
         
         // Players Allowed
         this.minPlayersAllowed = 2;
-        this.maxPlayersAllowed = 8;
+        this.maxPlayersAllowed = 4;
         
         // Game Behaviors
         this.cooperative = true;

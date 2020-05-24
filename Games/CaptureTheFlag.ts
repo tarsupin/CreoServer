@@ -8,17 +8,17 @@ export default class CaptureTheFlag extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.CTF;
+        this.gameType = GameType.TeamArena;
 		this.gameClassFlag = GameClassFlag.CaptureTheFlag;
         this.title = "Capture The Flag";
         this.description = "Capture the enemy's flag while defending your own.";
         
         // Players Allowed
         this.minPlayersAllowed = 4;
-        this.maxPlayersAllowed = 16;
+        this.maxPlayersAllowed = 12;
         
         // Game Behaviors
-        this.cooperative = false;
+        this.cooperative = true;
         this.competitive = true;
         this.battle = true;
         this.survival = false;
