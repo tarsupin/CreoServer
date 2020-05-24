@@ -1,19 +1,21 @@
 
 export const config = {
-	httpServer: {
+	server: {
 		protocol: "http",
 		host: "127.0.0.1",
 		local: "127.0.0.1",
 		port: 3000,
 	},
 	local: true,
-	environment: "local",
+	prod: false,
 	debug: {
-		active: true,
-        verbose: false,        // Provide extra logging details.
+        logging: true,
+        verbose: true,        // Provide extra logging details.
 		simulate: {
-			ppm: 30,
-			idle: 4,
+			active: true,
+			ppm: 20,
+            guests: 7,
+            paid: 3,
 			queued: 2,
 		}
 	},
@@ -26,70 +28,70 @@ export const config = {
 		hashKey: "1uEgfzXMYqLQ5X1Ji9DvslSVKhdp37oc",
 	},
 	ssl: {
-		active: true,
+		active: false,
 		key: '/etc/letsencrypt/live/nexus.games/privkey.pem',
 		cert: '/etc/letsencrypt/live/nexus.games/cert.pem',
-	},
-    roomServers: [
+    },
+    lobbies: [
         {
             name: "Malakai",
             endpoint: null,
-            port: 8001,
+            port: 8000,
         },
         {
             name: "Saiki",
             endpoint: null,
-            port: 8002,
+            port: 8001,
         },
         {
             name: "Kirito",
             endpoint: null,
-            port: 8003,
+            port: 8002,
         },
         {
             name: "Gannicus",
             endpoint: null,
-            port: 8004,
+            port: 8003,
         },
         {
             name: "Belthazor",
             endpoint: null,
-            port: 8005,
+            port: 8004,
         },
         {
             name: "Neo",
             endpoint: null,
-            port: 8006,
+            port: 8005,
         },
         {
             name: "Arya",
             endpoint: null,
-            port: 8007,
+            port: 8006,
         },
         {
             name: "Prairie",
             endpoint: null,
-            port: 8008,
+            port: 8007,
         },
         {
             name: "Collier",
             endpoint: null,
-            port: 8009,
+            port: 8008,
         },
         {
             name: "Shayla",
             endpoint: null,
-            port: 8010,
+            port: 8009,
         },
         {
             name: "Avalon",
             endpoint: null,
-            port: 8011,
+            port: 8010,
         },
         {
             name: "Doctress",
             endpoint: null,
-            port: 8012,
+            port: 8011,
         },
     ],
 	redis: {

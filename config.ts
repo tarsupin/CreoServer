@@ -7,7 +7,7 @@ export const config = {
 		port: 3000,
 	},
 	local: true,
-	environment: "local",
+	prod: false,
 	debug: {
         logging: true,
         verbose: true,        // Provide extra logging details.

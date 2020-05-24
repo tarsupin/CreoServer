@@ -223,7 +223,7 @@ export default abstract class Lobby {
         }
         
         const sim = config.debug ? config.debug.simulate : null;
-        if(sim != null && config.environment === 'local' && config.debug.simulate.active) {
+        if(sim != null && config.local === true && config.debug.simulate.active) {
             Lobby.simulate.active = true;
             Lobby.simulate.guests = sim.guests;
             Lobby.simulate.paid = sim.paid;
