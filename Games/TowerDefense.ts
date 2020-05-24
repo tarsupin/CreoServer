@@ -12,7 +12,7 @@ export default class TowerDefense extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.Survival;
+        this.arenaType = ArenaType.TeamArena;
 		this.gameClassFlag = GameClassFlag.TowerDefense;
         this.title = "Tower Defense";
         this.description = "Protect your tower against an onslaught of enemies.";
@@ -22,13 +22,8 @@ export default class TowerDefense extends GameClass {
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = true;
-        this.competitive = false;
-        this.battle = false;
-        this.survival = true;
-        
-        // Team Behaviors
-        this.teams = 0;
+        this.teams = 1;
+        this.pvp = false;
         
         // Respawns
         this.respawn = true;

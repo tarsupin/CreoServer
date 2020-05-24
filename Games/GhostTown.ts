@@ -14,7 +14,7 @@ export default class GhostTown extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.TeamBattle;
+        this.arenaType = ArenaType.TeamBattle;
 		this.gameClassFlag = GameClassFlag.GhostTown;
         this.title = "Ghost Town";
         this.description = "Collect gems while surviving team battle and environmental hazards.";
@@ -24,13 +24,8 @@ export default class GhostTown extends GameClass {
         this.maxPlayersAllowed = 12;
         
         // Game Behaviors
-        this.cooperative = true;
-        this.competitive = true;
-        this.battle = true;
-        this.survival = true;
-        
-        // Team Behaviors
         this.teams = 2;
+        this.pvp = true;
         
         // Respawns
         this.respawn = true;

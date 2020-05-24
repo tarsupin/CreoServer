@@ -1,10 +1,10 @@
 import { ArenaType, ArenaSize, RespawnType } from "./ArenaTypes.ts";
 import { GameClassFlag } from "./SocketFlags.ts";
 
-export default abstract class GameClass {
+export default class GameClass {
     
     // Game Details
-	gameType!: ArenaType;
+	arenaType!: ArenaType;
 	gameClassFlag!: GameClassFlag;
     title!: string;
     description!: string;
@@ -14,13 +14,8 @@ export default abstract class GameClass {
     maxPlayersAllowed: number = 4;      // Maximum number of players allowed in the game.
     
     // Game Behaviors
-    cooperative: boolean = false;       // Players are working together.
-    competitive: boolean = false;       // Players are working against each other.
-    battle: boolean = false;            // Players are capable of damaging each other.
-    survival: boolean = false;          // Players survive against environment.
-    
-    // Team Behaviors
     teams: number = 0;                  // 2+ means there are teams that play against each other.
+    pvp: boolean = false;            	// Players are capable of damaging each other.
     
     // Respawns
     respawn: boolean = true;                            // Whether or not respawns are allowed.
@@ -40,7 +35,4 @@ export default abstract class GameClass {
     arenaAllowFields: boolean = false;          // Allow "Field" Arenas
     arenaAllowRect: boolean = false;            // Allow "Rectangular" Arenas
     
-    constructor() {
-		
-    }
 }

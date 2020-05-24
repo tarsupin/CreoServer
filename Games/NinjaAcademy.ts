@@ -12,7 +12,7 @@ export default class NinjaAcademy extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.CoopLevel;
+        this.arenaType = ArenaType.TeamLevel;
 		this.gameClassFlag = GameClassFlag.NinjaAcademy;
         this.title = "Ninja Academy";
         this.description = "Traditional level, but everyone is a ninja. Collect all the gems.";
@@ -22,13 +22,8 @@ export default class NinjaAcademy extends GameClass {
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = true;
-        this.competitive = false;
-        this.battle = false;
-        this.survival = true;
-        
-        // Team Behaviors
-        this.teams = 0;
+        this.teams = 1;
+        this.pvp = false;
         
         // Respawns
         this.respawn = true;

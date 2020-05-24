@@ -24,19 +24,15 @@ export const enum ArenaSize {
 }
 
 export const enum ArenaType {
-	CoopLevel = 1,			// Players cooperate to finish. Traditional gameplay.
-	Survival = 2,			// Players cooperate to survive. Swarms or waves come.
-	TeamSurvival = 3,		// Players cooperate to survive. Swarms or waves come.
-	Trial = 4,				// Players compete, but not by attacking each other.
 	
-	Battle = 10,			// Players battle each other. Free for all.
-	TeamBattle = 11,		// Players battle each other on teams. Work with allies, defeat enemies.
+	Level = 1,				// Traditional level, or similar.
+	TeamLevel = 2,			// Traditional level, or similar. Players cooperate to finish.
 	
-	Challenge = 20,			// 
-	TeamChallenge = 21,		// 
+	Battle = 3,				// Players battle each other. Free for all.
+	TeamBattle = 4,			// Players battle each other on teams. Work with allies, defeat enemies.
 	
-	SoloArena = 30,			// 
-	TeamArena = 31,			// 
+	SoloArena = 5,			// Arena match, usually played on a smaller map.
+	TeamArena = 6,			// Arena match, usually played on a smaller map. Team game.
 	
 	// TERRITORY			// World Map where you compete over territories. Persistent Game.
 	// GM Modes				// GM plays against players.

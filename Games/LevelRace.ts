@@ -12,7 +12,7 @@ export default class LevelRace extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.Trial;
+        this.arenaType = ArenaType.Level;
 		this.gameClassFlag = GameClassFlag.LevelRace;
         this.title = "Race";
         this.description = "Race through a level. You have competitors, but they can't hurt you.";
@@ -22,13 +22,8 @@ export default class LevelRace extends GameClass {
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = false;
-        this.survival = false;
-        
-        // Team Behaviors
         this.teams = 0;
+        this.pvp = false;
         
         // Respawns
         this.respawn = true;

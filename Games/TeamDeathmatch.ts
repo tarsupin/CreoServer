@@ -8,7 +8,7 @@ export default class TeamDeathmatch extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.TeamBattle;
+        this.arenaType = ArenaType.TeamBattle;
 		this.gameClassFlag = GameClassFlag.TeamDeathmatch;
         this.title = "Team Deathmatch";
         this.description = "Score points for your team by defeating your enemies.";
@@ -18,13 +18,8 @@ export default class TeamDeathmatch extends GameClass {
         this.maxPlayersAllowed = 16;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = true;
-        this.survival = false;
-        
-        // Team Behaviors
         this.teams = 2;
+        this.pvp = true;
         
         // Respawns
         this.respawn = true;

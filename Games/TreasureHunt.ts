@@ -14,7 +14,7 @@ export default class TreasureHunt extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.Trial;
+        this.arenaType = ArenaType.SoloArena;
 		this.gameClassFlag = GameClassFlag.TreasureHunt;
         this.title = "Treasure Hunt";
         this.description = "Collect the most gems to achieve victory.";
@@ -24,13 +24,8 @@ export default class TreasureHunt extends GameClass {
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = false;
-        this.survival = false;
-        
-        // Team Behaviors
         this.teams = 0;
+        this.pvp = false;
         
         // Respawns
         this.respawn = true;

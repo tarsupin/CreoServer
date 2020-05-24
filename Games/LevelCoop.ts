@@ -8,7 +8,7 @@ export default class LevelCoop extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.CoopLevel;
+        this.arenaType = ArenaType.TeamLevel;
 		this.gameClassFlag = GameClassFlag.LevelCoop;
         this.title = "Cooperative Level";
         this.description = "Traditional level playthrough, with cooperative partners.";
@@ -18,13 +18,8 @@ export default class LevelCoop extends GameClass {
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = true;
-        this.competitive = false;
-        this.battle = false;
-        this.survival = false;
-        
-        // Team Behaviors
-        this.teams = 0;
+        this.teams = 1;
+        this.pvp = false;
         
         // Respawns
         this.respawn = true;

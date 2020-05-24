@@ -8,7 +8,7 @@ export default class BattleRoyale extends GameClass {
         super();
         
         // Game Details
-		this.gameType = ArenaType.Battle;
+		this.arenaType = ArenaType.Battle;
 		this.gameClassFlag = GameClassFlag.BattleRoyale;
         this.title = "Battle Royale";
         this.description = "Survive the longest. Defeat your enemies for supplies.";
@@ -18,13 +18,8 @@ export default class BattleRoyale extends GameClass {
         this.maxPlayersAllowed = 16;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = true;
-        this.survival = false;
-        
-        // Team Behaviors
         this.teams = 0;
+        this.pvp = true;
         
         // Respawns
         this.respawn = false;

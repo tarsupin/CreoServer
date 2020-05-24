@@ -13,7 +13,7 @@ export default class Dodgeball extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.TeamArena;
+        this.arenaType = ArenaType.TeamArena;
 		this.gameClassFlag = GameClassFlag.Dodgeball;
         this.title = "Dodgeball";
         this.description = "Dodge ball projectiles while knocking out your opponents.";
@@ -23,13 +23,8 @@ export default class Dodgeball extends GameClass {
         this.maxPlayersAllowed = 16;
         
         // Game Behaviors
-        this.cooperative = false;
-        this.competitive = true;
-        this.battle = false;
-        this.survival = false;
-        
-        // Team Behaviors
         this.teams = 2;
+        this.pvp = true;
         
         // Respawns
         this.respawn = true;

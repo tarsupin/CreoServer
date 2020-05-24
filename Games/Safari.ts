@@ -13,7 +13,7 @@ export default class Safari extends GameClass {
         super();
         
         // Game Details
-        this.gameType = ArenaType.Trial;
+        this.arenaType = ArenaType.TeamLevel;
 		this.gameClassFlag = GameClassFlag.Safari;
         this.title = "Safari";
         this.description = "Collect all of them gems while surviving against elemental hazards.";
@@ -23,13 +23,8 @@ export default class Safari extends GameClass {
         this.maxPlayersAllowed = 4;
         
         // Game Behaviors
-        this.cooperative = true;
-        this.competitive = false;
-        this.battle = false;
-        this.survival = true;
-        
-        // Team Behaviors
-        this.teams = 0;
+        this.teams = 1;
+        this.pvp = false;
         
         // Respawns
         this.respawn = true;
