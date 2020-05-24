@@ -21,23 +21,8 @@ export default class BattleRoyale extends GameClass {
         this.teams = 0;
         this.pvp = true;
         
-        // Respawns
-        this.respawn = false;
-        this.respawnFrames = 0;
-        this.respawnInvincible = 0;
-        this.respawnUntouchable = false;
-        this.respawnType = RespawnType.Spectator;
-        
         // Timer Limits
 		this.timeLimit = 150;
 		this.playDelay = 300;
-        
-        // Arena Games
-        this.arena = true;
-        this.arenaAllowHorizontal = false;
-        this.arenaAllowVertical = false;
-        this.arenaAllowFields = true;
-        this.arenaAllowRect = true;
     }
-    
 }

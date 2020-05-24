@@ -27,23 +27,8 @@ export default class DarkCircus extends GameClass {
         this.teams = 0;
         this.pvp = true;
         
-        // Respawns
-        this.respawn = true;
-        this.respawnFrames = 300;
-        this.respawnInvincible = 120;
-        this.respawnUntouchable = true;
-        this.respawnType = RespawnType.Standard;
-        
         // Timer Limits
         this.timeLimit = 180;
 		this.playDelay = 300;
-        
-        // Arena Games
-        this.arena = true;
-        this.arenaAllowHorizontal = true;
-        this.arenaAllowVertical = true;
-        this.arenaAllowFields = true;
-        this.arenaAllowRect = true;
     }
-    
 }

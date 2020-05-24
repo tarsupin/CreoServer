@@ -25,23 +25,8 @@ export default class TowerDefense extends GameClass {
         this.teams = 1;
         this.pvp = false;
         
-        // Respawns
-        this.respawn = true;
-        this.respawnFrames = 300;
-        this.respawnInvincible = 120;
-        this.respawnUntouchable = true;
-        this.respawnType = RespawnType.Standard;
-        
         // Timer Limits
         this.timeLimit = 180;
 		this.playDelay = 300;
-        
-        // Arena Games
-        this.arena = true;
-        this.arenaAllowHorizontal = true;
-        this.arenaAllowVertical = false;
-        this.arenaAllowFields = true;
-        this.arenaAllowRect = false;
     }
-    
 }

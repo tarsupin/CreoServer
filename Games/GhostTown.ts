@@ -27,23 +27,8 @@ export default class GhostTown extends GameClass {
         this.teams = 2;
         this.pvp = true;
         
-        // Respawns
-        this.respawn = true;
-        this.respawnFrames = 600;
-        this.respawnInvincible = 60;
-        this.respawnUntouchable = true;
-        this.respawnType = RespawnType.Standard;
-        
         // Timer Limits
         this.timeLimit = 240;
 		this.playDelay = 300;
-        
-        // Arena Games
-        this.arena = true;
-        this.arenaAllowHorizontal = true;
-        this.arenaAllowVertical = true;
-        this.arenaAllowFields = true;
-        this.arenaAllowRect = true;
     }
-    
 }
