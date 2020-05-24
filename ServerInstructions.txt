@@ -15,5 +15,14 @@ deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net serve
 deno run --allow-env --allow-write --allow-read --allow-plugin --allow-net server.ts -port 8001
 
 
+// Lobby Args
+	-pvp, -nopvp			// Assign a strict PVP Server or No-PVP Server.
+	-solo, -teams			// Assign a strict Team Server or Solo Server.
+	-levels, -arena			// Assign a strict Arena Server or Level Server.
+	-test					// Assign a strict Playtesting Server.
+	-leagueMin [0-8]		// Assign a minimum league to the server.
+	-leagueMax [0-8]		// Assign a maximum league to the server.
+
+
 // Find Port
 netstat -na | find "8001"

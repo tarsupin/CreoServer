@@ -1,7 +1,7 @@
 import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
 import { config } from "../config.ts";
 import Timer from "../Engine/Timer.ts";
-import { GamePreference, League } from "../Engine/ArenaTypes.ts";
+import { GamePreference, League, NaturePVP, NatureAllies, NatureLevel } from "../Engine/ArenaTypes.ts";
 import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";
@@ -47,8 +47,12 @@ export default abstract class Lobby {
 	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
 	
 	// Lobby Nature
-	static leagueMin: League = League.Unrated;		// The minimum league allowance in this lobby.
-	static leagueMax: League = League.Grandmaster;	// The maximum league allowance in this lobby.
+	static naturePVP: NaturePVP = NaturePVP.Any;				// Any, PVP, NoPVP
+	static natureAllies: NatureAllies = NatureAllies.Any;		// Any, Solo, Team
+	static natureLevel: NatureLevel = NatureLevel.Any;			// Any, Level, Arena
+	static natureTest: boolean = false;							// Whether this is a playtest lobby or not.
+	static leagueMin: League = League.Unrated;					// The minimum league allowance in this lobby.
+	static leagueMax: League = League.Grandmaster;				// The maximum league allowance in this lobby.
 	
     // Groups
 	static groups: { [gid: string]: GroupData } = {}	// Groups; tracks how many group players are active, idle, etc.

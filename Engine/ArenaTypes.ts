@@ -51,6 +51,24 @@ export const enum League {
     Grandmaster = 8,        // Players that are indisputable champions. 99-100%.
 }
 
+export const enum NaturePVP {
+	Any = 0,
+	PVP = 1,
+	NoPVP = 2,
+}
+
+export const enum NatureAllies {
+	Any = 0,
+	Solo = 1,
+	Teams = 2,
+}
+
+export const enum NatureLevel {
+	Any = 0,
+	Level = 1,
+	Arena = 2,
+}
+
 // Game Type Groups contain multiple game types. Users can indicate these as preferences for what rooms are created.
 export const enum GamePreference {
 	Undeclared = 0,
