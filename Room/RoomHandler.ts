@@ -1,7 +1,7 @@
 import Activity from "../Lobby/Activity.ts";
 import RoomTracker from "./RoomTracker.ts";
 import Room from "./Room.ts";
-import { League, PlayerRank } from "../Engine/GameTypes.ts";
+import { League, PlayerRank } from "../Engine/ArenaTypes.ts";
 import Lobby from "../Lobby/Lobby.ts";
 import GameClass from "../Engine/GameClass.ts";
 import Mapper from "../Engine/Mapper.ts";

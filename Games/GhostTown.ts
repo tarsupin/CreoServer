@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -14,7 +14,7 @@ export default class GhostTown extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.TeamBattle;
+        this.gameType = ArenaType.TeamBattle;
 		this.gameClassFlag = GameClassFlag.GhostTown;
         this.title = "Ghost Town";
         this.description = "Collect gems while surviving team battle and environmental hazards.";

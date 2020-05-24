@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class LevelVersus extends GameClass {
@@ -8,7 +8,7 @@ export default class LevelVersus extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Challenge;
+        this.gameType = ArenaType.Challenge;
 		this.gameClassFlag = GameClassFlag.LevelVersus;
         this.title = "Versus Level";
         this.description = "Traditional level playthrough, but with competition and battling.";

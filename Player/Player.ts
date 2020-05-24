@@ -1,4 +1,4 @@
-import { GamePreference, PlayerRank, PlayerKarma, League } from "../Engine/GameTypes.ts";
+import { GamePreference, PlayerRank, PlayerKarma, League } from "../Engine/ArenaTypes.ts";
 import { WebSocket } from "../Engine/WebSocket.ts";
 import { IKey } from "../Engine/SocketFlags.ts";
 import RoomTracker from "../Room/RoomTracker.ts";

@@ -1,7 +1,7 @@
 import { WebSocket, WebSocketServer } from "../Engine/WebSocket.ts";
 import { config } from "../config.ts";
 import Timer from "../Engine/Timer.ts";
-import { GamePreference, League } from "../Engine/GameTypes.ts";
+import { GamePreference, League } from "../Engine/ArenaTypes.ts";
 import Activity from "./Activity.ts";
 import RoomHandler from "../Room/RoomHandler.ts";
 import PlayerHandler from "../Player/PlayerHandler.ts";

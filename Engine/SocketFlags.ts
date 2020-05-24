@@ -120,12 +120,6 @@ export const enum GameClassFlag {
 	BattleRoyale = 62,
 }
 
-	// - The Endbringer
-	// 	- Superheroes fight against a really powerful boss.
-	// 	- You each have a combo set: Suit + Hat + Att Power + Mob Power. Can use all of them.
-	// 	- Can still die, but always a superhero.
-	// - Dodgeball
-
 // Admin Message Flags have a follow-up sequence:
 export const enum AdminMessageFlag {
 	

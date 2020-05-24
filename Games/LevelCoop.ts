@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class LevelCoop extends GameClass {
@@ -8,7 +8,7 @@ export default class LevelCoop extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.CoopLevel;
+        this.gameType = ArenaType.CoopLevel;
 		this.gameClassFlag = GameClassFlag.LevelCoop;
         this.title = "Cooperative Level";
         this.description = "Traditional level playthrough, with cooperative partners.";

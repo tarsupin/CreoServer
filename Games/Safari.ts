@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -13,7 +13,7 @@ export default class Safari extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Trial;
+        this.gameType = ArenaType.Trial;
 		this.gameClassFlag = GameClassFlag.Safari;
         this.title = "Safari";
         this.description = "Collect all of them gems while surviving against elemental hazards.";

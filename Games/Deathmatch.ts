@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class Deathmatch extends GameClass {
@@ -8,7 +8,7 @@ export default class Deathmatch extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Battle;
+        this.gameType = ArenaType.Battle;
 		this.gameClassFlag = GameClassFlag.Deathmatch;
         this.title = "Deathmatch";
         this.description = "Score points by defeating your enemies.";

@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class BattleRoyale extends GameClass {
@@ -8,7 +8,7 @@ export default class BattleRoyale extends GameClass {
         super();
         
         // Game Details
-		this.gameType = GameType.Battle;
+		this.gameType = ArenaType.Battle;
 		this.gameClassFlag = GameClassFlag.BattleRoyale;
         this.title = "Battle Royale";
         this.description = "Survive the longest. Defeat your enemies for supplies.";

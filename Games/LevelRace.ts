@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -12,7 +12,7 @@ export default class LevelRace extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Trial;
+        this.gameType = ArenaType.Trial;
 		this.gameClassFlag = GameClassFlag.LevelRace;
         this.title = "Race";
         this.description = "Race through a level. You have competitors, but they can't hurt you.";

@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -13,7 +13,7 @@ export default class Dodgeball extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.TeamArena;
+        this.gameType = ArenaType.TeamArena;
 		this.gameClassFlag = GameClassFlag.Dodgeball;
         this.title = "Dodgeball";
         this.description = "Dodge ball projectiles while knocking out your opponents.";

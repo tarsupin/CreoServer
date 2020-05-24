@@ -1,5 +1,5 @@
 import Lobby from "./Lobby.ts";
-import { League } from "../Engine/GameTypes.ts";
+import { League } from "../Engine/ArenaTypes.ts";
 
 /*
 	The Activity Tracker tracks recent activity in the lobby, such as PPM (Players Per Minute)

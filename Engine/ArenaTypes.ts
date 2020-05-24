@@ -23,7 +23,7 @@ export const enum ArenaSize {
     Rect3 = 33,                     // 90x45 in size.
 }
 
-export const enum GameType {
+export const enum ArenaType {
 	CoopLevel = 1,			// Players cooperate to finish. Traditional gameplay.
 	Survival = 2,			// Players cooperate to survive. Swarms or waves come.
 	TeamSurvival = 3,		// Players cooperate to survive. Swarms or waves come.

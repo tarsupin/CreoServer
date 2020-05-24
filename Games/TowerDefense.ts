@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -12,7 +12,7 @@ export default class TowerDefense extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Survival;
+        this.gameType = ArenaType.Survival;
 		this.gameClassFlag = GameClassFlag.TowerDefense;
         this.title = "Tower Defense";
         this.description = "Protect your tower against an onslaught of enemies.";

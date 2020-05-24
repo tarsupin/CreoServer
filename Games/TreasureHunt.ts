@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -14,7 +14,7 @@ export default class TreasureHunt extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Trial;
+        this.gameType = ArenaType.Trial;
 		this.gameClassFlag = GameClassFlag.TreasureHunt;
         this.title = "Treasure Hunt";
         this.description = "Collect the most gems to achieve victory.";

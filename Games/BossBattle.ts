@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class BossBattle extends GameClass {
@@ -8,7 +8,7 @@ export default class BossBattle extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.TeamBattle;
+        this.gameType = ArenaType.TeamBattle;
 		this.gameClassFlag = GameClassFlag.BossBattle;
         this.title = "Boss Battle";
         this.description = "Defeat a powerful boss with your team.";

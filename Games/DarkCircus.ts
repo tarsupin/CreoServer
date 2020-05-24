@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -14,7 +14,7 @@ export default class DarkCircus extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.Battle;
+        this.gameType = ArenaType.Battle;
 		this.gameClassFlag = GameClassFlag.DarkCircus;
         this.title = "Dark Circus";
         this.description = "Collect the most gems while surviving battle to achieve victory.";

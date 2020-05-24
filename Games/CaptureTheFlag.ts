@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class CaptureTheFlag extends GameClass {
@@ -8,7 +8,7 @@ export default class CaptureTheFlag extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.TeamArena;
+        this.gameType = ArenaType.TeamArena;
 		this.gameClassFlag = GameClassFlag.CaptureTheFlag;
         this.title = "Capture The Flag";
         this.description = "Capture the enemy's flag while defending your own.";

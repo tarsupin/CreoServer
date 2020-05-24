@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 /*
@@ -12,7 +12,7 @@ export default class Superheroes extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.CoopLevel;
+        this.gameType = ArenaType.CoopLevel;
 		this.gameClassFlag = GameClassFlag.Superheroes;
         this.title = "Superheroes";
         this.description = "Traditional level, but everyone is a superhero.";

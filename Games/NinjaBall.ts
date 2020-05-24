@@ -1,5 +1,5 @@
 import GameClass from "../Engine/GameClass.ts";
-import { GameType, RespawnType } from "../Engine/GameTypes.ts";
+import { ArenaType, RespawnType } from "../Engine/ArenaTypes.ts";
 import { GameClassFlag } from "../Engine/SocketFlags.ts";
 
 export default class NinjaBall extends GameClass {
@@ -8,7 +8,7 @@ export default class NinjaBall extends GameClass {
         super();
         
         // Game Details
-        this.gameType = GameType.TeamArena;
+        this.gameType = ArenaType.TeamArena;
 		this.gameClassFlag = GameClassFlag.NinjaBall;
         this.title = "Ninja Ball";
         this.description = "Kick the ball into the opponent's goal to score.";

@@ -1,6 +1,6 @@
 import Player from "../Player/Player.ts";
 import GameClass from "../Engine/GameClass.ts";
-import { League } from "../Engine/GameTypes.ts";
+import { League } from "../Engine/ArenaTypes.ts";
 import Timer from "../Engine/Timer.ts";
 import RoomHandler from "./RoomHandler.ts";
 import VerboseLog from "../Engine/VerboseLog.ts";

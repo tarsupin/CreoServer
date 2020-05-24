@@ -1,10 +1,10 @@
-import { GameType, ArenaSize, RespawnType } from "./GameTypes.ts";
+import { ArenaType, ArenaSize, RespawnType } from "./ArenaTypes.ts";
 import { GameClassFlag } from "./SocketFlags.ts";
 
 export default abstract class GameClass {
     
     // Game Details
-	gameType!: GameType;
+	gameType!: ArenaType;
 	gameClassFlag!: GameClassFlag;
     title!: string;
     description!: string;
@@ -41,6 +41,6 @@ export default abstract class GameClass {
     arenaAllowRect: boolean = false;            // Allow "Rectangular" Arenas
     
     constructor() {
-        
+		
     }
 }
