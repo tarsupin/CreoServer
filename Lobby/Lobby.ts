@@ -10,6 +10,8 @@ import VerboseLog from "../Engine/VerboseLog.ts";
 import RoomTracker from "../Room/RoomTracker.ts";
 import Room from "../Room/Room.ts";
 import ReceiveBroadcast from "./ReceiveBroadcast.ts";
+import GameClass from "../Engine/GameClass.ts";
+import LobbyFuncGames from "./LobbyFuncGames.ts";
 
 /*
 	The Lobby Server is where all Players (on the linode) will identify the servers / rooms to join.
@@ -45,6 +47,10 @@ export default abstract class Lobby {
 	
 	static tickCounter: number = 0;			// Track the number of ticks with modulus of 120.
 	static longestWait: number = 0;			// The duration in miliseconds of the longest idle time in the lobby.
+	
+	// Lobby Games
+	static gamesAllowed: Array<GameClass>;			// Tracks games allowed on the server.
+	static minPlayersForRoomGen: number = 2;		// Tracks the minimum number of playrs required to generate a game.
 	
 	// Lobby Nature
 	static naturePVP: NaturePVP = NaturePVP.Any;				// Any, PVP, NoPVP
@@ -89,7 +95,10 @@ export default abstract class Lobby {
         
         // Prepare Socket Server
         Lobby.wss = new WebSocketServer(Lobby.serverPort);
-        
+		
+		// Identify Games that can be played on this server:
+		LobbyFuncGames.initializeListOfGamesAllowed();
+		
         // Prepare Arena Lobby & Rooms
         PlayerHandler.buildPlayerPlaceholders();
 		RoomHandler.buildRoomPlaceholders();

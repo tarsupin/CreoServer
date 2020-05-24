@@ -183,10 +183,12 @@ export default abstract class RoomHandler {
 	}
 	
 	// Determine Game Type
-	// Choose based on Room Size + Preferences
+	// Choose based on Room Size + Lobby Nature + Lobby Preferences (maybe eventually).
 	static determineGameClass(): GameClass {
 		
-		// TODO: implement decision based on room size.
+		// Update Decision based on Room Size
+		
+		// Update Decision based on Lobby Nature
 		
 		return Mapper.GameClasses.Deathmatch;
 	}
