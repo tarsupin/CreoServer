@@ -40,17 +40,21 @@ export default abstract class LobbyFuncGames {
 		// Update Games On Server:
 		Lobby.gamesAllowed = listOfGames.slice(0, gameCount);
 		
-		// Determine the minimum number of players required to generate a room:
+		// Determine the minimum & maximum number of players for room generation:
 		let minReq = 16;
+		let maxAllow = 2;
 		
 		for(let i = 0; i < Lobby.gamesAllowed.length; i++) {
 			let gameClass = Lobby.gamesAllowed[i];
+			
 			if(gameClass.minPlayersAllowed < minReq) {
 				minReq = gameClass.minPlayersAllowed;
+				maxAllow = gameClass.maxPlayersAllowed;
 			}
 		}
 		
 		Lobby.minPlayersForRoomGen = minReq;
+		Lobby.maxPlayersForRoomGen = maxAllow;
 	}
 	
 	static isGameAllowedOnServer( game: GameClass ): boolean {

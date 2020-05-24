@@ -7,6 +7,7 @@ import GameClass from "../Engine/GameClass.ts";
 import Mapper from "../Engine/Mapper.ts";
 import PlayerTracker from "../Player/PlayerTracker.ts";
 import Player from "../Player/Player.ts";
+import VerboseLog from "../Engine/VerboseLog.ts";
 
 export default abstract class RoomHandler {
     
@@ -80,9 +81,15 @@ export default abstract class RoomHandler {
 		RoomHandler.lastRoomGenTime = Date.now();
 		RoomHandler.roomSize = RoomHandler.determineNextRoomSize();
 		
-		// Limit the room size to the number of idle players.
-		if(Activity.playersIdle > RoomHandler.roomSize) {
-			RoomHandler.roomSize = Activity.playersIdle;
+		// Room Size Was Insufficient
+		if(RoomHandler.roomSize < 2) {
+			VerboseLog.log("Room Creation Size was set at " + RoomHandler.roomSize + ". No Room Generation.");
+			return;
+		}
+		
+		// Limit Room Size based on maximum allowed for room generation:
+		if(RoomHandler.roomSize > Lobby.maxPlayersForRoomGen) {
+			RoomHandler.roomSize = Lobby.maxPlayersForRoomGen;
 		}
 		
 		// Determine League Allowances
@@ -186,11 +193,33 @@ export default abstract class RoomHandler {
 	// Choose based on Room Size + Lobby Nature + Lobby Preferences (maybe eventually).
 	static determineGameClass(): GameClass {
 		
-		// Update Decision based on Room Size
+		console.log("Room Size is: " + RoomHandler.roomSize);
 		
-		// Update Decision based on Lobby Nature
+		// Fifty attempts to generate a Game Class at random.
+		for(let i = 0; i < 50; i++) {
+			let rnd = Math.floor(Math.random() * Lobby.gamesAllowed.length);
+			console.log("Random: " + rnd);
+			let gameClass = Lobby.gamesAllowed[rnd];
+			console.log("Game Class Chosen: ");
+			console.log(gameClass);
+			// Confirm that Room Size allows for Room Generation:
+			if(RoomHandler.roomSize < gameClass.minPlayersAllowed) { continue; }
+			
+			// If the Room Size is larger than the maximum allowed, reduce room size to accomodate it.
+			// This is a better solution that preventing creation, because many games would occur VERY rarely if it didn't.
+			// For example, Tower Defense requires exactly four players. This allows it to spawn when higher room counts are created.
+			if(RoomHandler.roomSize > gameClass.maxPlayersAllowed) {
+				RoomHandler.roomSize = gameClass.maxPlayersAllowed;
+			}
+			
+			return gameClass;
+		}
 		
-		return Mapper.GameClasses.Deathmatch;
+		// If the system failed to generate a Game Class at random, high probability that something went wrong.
+		VerboseLog.log("Failed to Generate Room with a Room Size of " + RoomHandler.roomSize + ".");
+		
+		// Since all previous attempts have failed, just play a cooperative level.
+		return Mapper.GameClasses.LevelCoop;
 	}
 	
 	// Determine League Allowances for the Room
@@ -243,6 +272,11 @@ export default abstract class RoomHandler {
 		
 		// If there aren't enough players available, cannot create a room.
 		if(available <= 1) { return 0; }
+		
+		// Must be enough players to fulfill a room generation requirement.
+		if(available < Lobby.minPlayersForRoomGen) { return 0; }
+		
+		// If very few players, create a room for all of them.
 		if(available <= 3) { return available; }
 		
 		const rnd = Math.floor(Math.random() * 100);

@@ -50,7 +50,8 @@ export default abstract class Lobby {
 	
 	// Lobby Games
 	static gamesAllowed: Array<GameClass>;			// Tracks games allowed on the server.
-	static minPlayersForRoomGen: number = 2;		// Tracks the minimum number of playrs required to generate a game.
+	static minPlayersForRoomGen: number = 2;		// Tracks the minimum number of players required to generate a game.
+	static maxPlayersForRoomGen: number = 16;		// Tracks the maximum number of players allowed to generate a game.
 	
 	// Lobby Nature
 	static naturePVP: NaturePVP = NaturePVP.Any;				// Any, PVP, NoPVP
